@@ -18,5 +18,7 @@ namespace K2_EducationProgramClient.Models
         public DateOnly EndDate { get; set; }
         public string StudentStatus { get; set; }
 
+        public ICollection<Enrollment> Enrollments { get; set; }
+
     }
 }

@@ -15,6 +15,8 @@ namespace K2_EducationProgramClient.Models
         public DateOnly GradeDate { get; set; }
         public string GradeValue { get; set; }
 
+        public ICollection<Enrollment> Enrollments { get; set; }
+
         [ForeignKey("Enrollment")]
         public int FkEnrollmentID { get; set; }
         public Enrollment Enrollment { get; set; }
