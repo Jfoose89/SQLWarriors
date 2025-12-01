@@ -101,15 +101,125 @@ namespace K2_EducationProgramClient.Models.UI
         }
         public void AddTeacher()
         {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Create new teacher");
+
+            string? inTeacherFirstName = ConsolePrintHelper.AdminAskChoice("Enter First Name: ");
+            string? inTeacherLastName = ConsolePrintHelper.AdminAskChoice("Enter Last Name: ");
+            string? inTeacherEmail = ConsolePrintHelper.AdminAskChoice("Enter Email: ");
+
+            if (string.IsNullOrWhiteSpace(inTeacherFirstName) || string.IsNullOrWhiteSpace(inTeacherLastName)
+                || string.IsNullOrWhiteSpace(inTeacherEmail))
+            {
+                ConsolePrintHelper.PrintError("Input cannot be blank.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            var teacher = new Teacher
+            {
+                FirstName = inTeacherFirstName,
+                LastName = inTeacherLastName,
+                Email = inTeacherEmail
+            };
+
+            if (db is not null)
+            {
+                db.Teachers.Add(teacher);
+                db.SaveChanges();
+                Console.WriteLine($"Teacher added: '{inTeacherFirstName} {inTeacherLastName}' | {inTeacherEmail}");
+            }
+
+            ConsolePrintHelper.Pause();
         }
         public void AddRoom()
         {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Create new room");
+
+            string? inRoomName = ConsolePrintHelper.AdminAskChoice("Enter Room Name: ");
+            if (string.IsNullOrWhiteSpace(inRoomName))
+            {
+                ConsolePrintHelper.PrintError("Input cannot be blank.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            int inRoomCapacity = 0;
+            while (!int.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Room Capacity: "), out inRoomCapacity))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
+                Console.Write("Enter a number: ");
+            }
+
+            var room = new Room
+            {
+                RoomName = inRoomName,
+                Capacity = inRoomCapacity
+            };
+
+            if (db is not null)
+            {
+                db.Rooms.Add(room);
+                db.SaveChanges();
+                Console.WriteLine($"Teacher added: '{inRoomName}' | {inRoomCapacity}");
+            }
+
+            ConsolePrintHelper.Pause();
         }
         public void AddEnrollment()
         {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Create new enrollment");
+
+            DateOnly inEnrollmentDate;
+            while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Enrollment Start Date (YYYY-MM-DD): "), out inEnrollmentDate))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid date.");
+                Console.Write("Enter a date (yyyy-MM-dd): ");
+            }
+
+            var enrollment = new Enrollment
+            {
+                EnrollmentDate = inEnrollmentDate
+            };
+
+            if (db is not null)
+            {
+                db.Enrollments.Add(enrollment);
+                db.SaveChanges();
+                Console.WriteLine($"Enrollment added: {inEnrollmentDate}");
+            }
         }
         public void FindStudent()
         {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Find student");
+
+            string? inStudentName = ConsolePrintHelper.AdminAskChoice("Enter Name (First or Last):");
+
+            if (string.IsNullOrWhiteSpace(inStudentName))
+            {
+                ConsolePrintHelper.PrintError("Email cannot be blank.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            if (db is not null)
+            {
+                var foundStudents = db.Students
+                                    .Where(s => s.FirstName == inStudentName || s.LastName == inStudentName)
+                                    .Select(s => $"({s.StudentID}) {s.FirstName} {s.LastName} | {s.Email}") 
+                                    .ToList();
+
+                ConsolePrintHelper.AdminMenu("-", foundStudents);
+            }
+
+            ConsolePrintHelper.Pause();
         }
         public void AddStudent()
         {
