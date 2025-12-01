@@ -8,21 +8,20 @@ using System.Threading.Tasks;
 
 namespace K2_EducationProgramClient.Models
 {
-    public class Enrollment
+    public class TeacherCourse
     {
         [Key]
-        public int EnrollmentID { get; set; }
+        public int TeacherCourseID { get; set; }
+        [ForeignKey("Teacher")]
+        public int FkTeacherID { get; set; }
+        public Teacher Teacher { get; set; }
 
-        [ForeignKey("StudentID")]
-        public int FkStudentID { get; set; }
-        public Student Student { get; set; }
-
-        [ForeignKey("CourseID")]
+        [ForeignKey("Course")]
         public int FkCourseID { get; set; }
         public Course Course { get; set; }
-
-        public DateOnly EnrollmentDate { get; set; }
-        public ICollection<Grade>? Grades { get; set; }
-
+        
+        [ForeignKey("Schedule")]
+        public int? FkScheduleID { get; set; }
+        public Schedule? Schedule { get; set; }
     }
 }
