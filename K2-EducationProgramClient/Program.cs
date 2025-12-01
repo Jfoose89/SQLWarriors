@@ -37,10 +37,10 @@ namespace K2_EducationProgramClient
             // Ensure DB is created
             db.Database.EnsureCreated();
 
-            var MainMenu = new MainMenu();
-            MainMenu.db = db;
+            //var MainMenu = new MainMenu();
+            //MainMenu.db = db;
 
-            MainMenu.Run();
+            //MainMenu.Run();
         }
     }
 }
