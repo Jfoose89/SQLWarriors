@@ -25,7 +25,7 @@ namespace K2_EducationProgramClient.Models.UI
                     "Add New Teacher",
                     "Add New Room",
                     "Add New Enrollment",
-                    "Find Student and show [Courses, Grades, Teacher, GradeDate]",
+                    "Find Student and show [Courses, Grades]",
                     "Add New Student",
                     "Remove Student",
                     "Edit Student",
@@ -154,10 +154,20 @@ namespace K2_EducationProgramClient.Models.UI
                 Console.Write("Enter a number: ");
             }
 
+            // TODO: Find teacher in list and assign to room.
+            string? inRoomTeacher = ConsolePrintHelper.AdminAskChoice("Assign Teacher To Room: ");
+            if (string.IsNullOrWhiteSpace(inRoomTeacher))
+            {
+                ConsolePrintHelper.PrintError("Input cannot be blank.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
             var room = new Room
             {
                 RoomName = inRoomName,
                 Capacity = inRoomCapacity
+                // Teacher = inRoomTeacher
             };
 
             if (db is not null)

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using K2_EducationProgramClient.Models;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 
 namespace K2_EducationProgramClient.Data
