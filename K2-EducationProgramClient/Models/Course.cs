@@ -11,8 +11,11 @@ namespace K2_EducationProgramClient.Models
     {
         [Key]
         public int CourseID { get; set; }
-        public string CourseName { get; set; }
+        public required string CourseName { get; set; }
+        public required string? CourseStatus { get; set; }
         public DateOnly ActiveFrom { get; set; }
-        public DateOnly ActiveTo { get; set; }
+        public DateOnly? ActiveTo { get; set; }
+        public ICollection<Enrollment>? Enrollments { get; set; }
+        public ICollection<TeacherCourse>? TeacherCourses { get; set; }
     }
 }

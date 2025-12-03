@@ -1,7 +1,11 @@
 ﻿using K2_EducationProgramClient.Data;
 using K2_EducationProgramClient.Models;
+using K2_EducationProgramClient.Models.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace K2_EducationProgramClient
 {
@@ -9,28 +13,34 @@ namespace K2_EducationProgramClient
     {
         static void Main(string[] args)
         {
-        //    bool running = true;
-        //    while (running)
-        //    {
-        //        Console.Clear();
-        //        ConsolePrintHelper.AdminTitle("ADMIN");
-        //        ConsolePrintHelper.AdminMenu("MAIN MENU", new List<string>
-        //        {
-        //            "Users management",
-        //            "Accounts management",
-        //            "Transactions management"
-        //        });
-        //        var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
+            var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var appRoot = Directory.GetParent(exePath).Parent.Parent.FullName;
+            Console.WriteLine(appRoot);
 
-        //        switch (choice)
-        //        {
-        //            case "1": Console.WriteLine("Selection 1"); break;
-        //            case "2": Console.WriteLine("Selection 2"); break;
-        //            case "3": Console.WriteLine("Selection 3"); break;
-        //            case "0": running = false; break;
-        //            default: ConsolePrintHelper.FaultyMenuChoice(); break;
-        //        }
-        //    }
+            // Build configuration
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(appRoot)  // AppContext.BaseDirectory points to the runtime folder
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            // Setup DI container
+            var services = new ServiceCollection();
+
+            services.AddDbContext<EducationProgramClientDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("EducationProgramDB")));
+
+            var provider = services.BuildServiceProvider();
+
+            // Resolve DbContext
+            using var db = provider.GetRequiredService<EducationProgramClientDbContext>();
+
+            // Ensure DB is created
+            db.Database.EnsureCreated();
+
+            //var MainMenu = new MainMenu();
+            //MainMenu.db = db;
+
+            //MainMenu.Run();
         }
     }
 }

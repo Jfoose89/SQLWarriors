@@ -11,12 +11,14 @@ namespace K2_EducationProgramClient.Models
     {
         [Key]
         public int StudentID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public required string Email { get; set; }
         public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
-        public string StudentStatus { get; set; }
+        public DateOnly? EndDate { get; set; }
+        public string? StudentStatus { get; set; }
+
+        public ICollection<Enrollment>? Enrollments { get; set; }
 
     }
 }
