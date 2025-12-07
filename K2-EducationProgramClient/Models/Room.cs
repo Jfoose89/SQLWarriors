@@ -12,9 +12,9 @@ namespace K2_EducationProgramClient.Models
     {
         [Key]
         public int RoomID { get; set; }
+        public int? FkTeacherID { get; set; }
 
-        [ForeignKey("TeacherID")]
-        public int? TeacherID { get; set; }
+        [ForeignKey("FkTeacherID")]        
         public Teacher? Teacher { get; set; }
 
         public required string RoomName { get; set; }

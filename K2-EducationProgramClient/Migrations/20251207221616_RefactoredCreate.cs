@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace K2_EducationProgramClient.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialEducationProgramDb : Migration
+    public partial class RefactoredCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,26 +18,13 @@ namespace K2_EducationProgramClient.Migrations
                     CourseID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CourseName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CourseStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ActiveFrom = table.Column<DateOnly>(type: "date", nullable: false),
-                    ActiveTo = table.Column<DateOnly>(type: "date", nullable: false)
+                    ActiveTo = table.Column<DateOnly>(type: "date", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.CourseID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Rooms",
-                columns: table => new
-                {
-                    RoomID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rooms", x => x.RoomID);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,8 +37,8 @@ namespace K2_EducationProgramClient.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    StudentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    StudentStatus = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -79,9 +66,9 @@ namespace K2_EducationProgramClient.Migrations
                 {
                     EnrollmentID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EnrollmentDate = table.Column<DateOnly>(type: "date", nullable: false),
                     FkStudentID = table.Column<int>(type: "int", nullable: false),
-                    FkCourseID = table.Column<int>(type: "int", nullable: false)
+                    FkCourseID = table.Column<int>(type: "int", nullable: false),
+                    EnrollmentDate = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,34 +88,45 @@ namespace K2_EducationProgramClient.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Schedules",
+                name: "Rooms",
                 columns: table => new
                 {
-                    ScheduleID = table.Column<int>(type: "int", nullable: false)
+                    RoomID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    FkCourseID = table.Column<int>(type: "int", nullable: false),
-                    FkRoomID = table.Column<int>(type: "int", nullable: false),
-                    FkTeacherID = table.Column<int>(type: "int", nullable: false)
+                    FkTeacherID = table.Column<int>(type: "int", nullable: true),
+                    RoomName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Schedules", x => x.ScheduleID);
+                    table.PrimaryKey("PK_Rooms", x => x.RoomID);
                     table.ForeignKey(
-                        name: "FK_Schedules_Courses_FkCourseID",
+                        name: "FK_Rooms_Teachers_FkTeacherID",
+                        column: x => x.FkTeacherID,
+                        principalTable: "Teachers",
+                        principalColumn: "TeacherID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeacherCourses",
+                columns: table => new
+                {
+                    TeacherCourseID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FkTeacherID = table.Column<int>(type: "int", nullable: false),
+                    FkCourseID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeacherCourses", x => x.TeacherCourseID);
+                    table.ForeignKey(
+                        name: "FK_TeacherCourses_Courses_FkCourseID",
                         column: x => x.FkCourseID,
                         principalTable: "Courses",
                         principalColumn: "CourseID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Schedules_Rooms_FkRoomID",
-                        column: x => x.FkRoomID,
-                        principalTable: "Rooms",
-                        principalColumn: "RoomID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Schedules_Teachers_FkTeacherID",
+                        name: "FK_TeacherCourses_Teachers_FkTeacherID",
                         column: x => x.FkTeacherID,
                         principalTable: "Teachers",
                         principalColumn: "TeacherID",
@@ -141,10 +139,10 @@ namespace K2_EducationProgramClient.Migrations
                 {
                     GradeID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GradeDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    GradeValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FkEnrollmentID = table.Column<int>(type: "int", nullable: false),
-                    FkTeacherID = table.Column<int>(type: "int", nullable: false)
+                    FkTeacherID = table.Column<int>(type: "int", nullable: false),
+                    GradeDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    GradeValue = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -160,6 +158,35 @@ namespace K2_EducationProgramClient.Migrations
                         column: x => x.FkTeacherID,
                         principalTable: "Teachers",
                         principalColumn: "TeacherID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Schedules",
+                columns: table => new
+                {
+                    ScheduleID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FkTeacherCourseID = table.Column<int>(type: "int", nullable: false),
+                    FkRoomID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schedules", x => x.ScheduleID);
+                    table.ForeignKey(
+                        name: "FK_Schedules_Rooms_FkRoomID",
+                        column: x => x.FkRoomID,
+                        principalTable: "Rooms",
+                        principalColumn: "RoomID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Schedules_TeacherCourses_FkTeacherCourseID",
+                        column: x => x.FkTeacherCourseID,
+                        principalTable: "TeacherCourses",
+                        principalColumn: "TeacherCourseID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -184,9 +211,9 @@ namespace K2_EducationProgramClient.Migrations
                 column: "FkTeacherID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedules_FkCourseID",
-                table: "Schedules",
-                column: "FkCourseID");
+                name: "IX_Rooms_FkTeacherID",
+                table: "Rooms",
+                column: "FkTeacherID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_FkRoomID",
@@ -194,8 +221,18 @@ namespace K2_EducationProgramClient.Migrations
                 column: "FkRoomID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedules_FkTeacherID",
+                name: "IX_Schedules_FkTeacherCourseID",
                 table: "Schedules",
+                column: "FkTeacherCourseID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeacherCourses_FkCourseID",
+                table: "TeacherCourses",
+                column: "FkCourseID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeacherCourses_FkTeacherID",
+                table: "TeacherCourses",
                 column: "FkTeacherID");
         }
 
@@ -215,13 +252,16 @@ namespace K2_EducationProgramClient.Migrations
                 name: "Rooms");
 
             migrationBuilder.DropTable(
-                name: "Teachers");
+                name: "TeacherCourses");
+
+            migrationBuilder.DropTable(
+                name: "Students");
 
             migrationBuilder.DropTable(
                 name: "Courses");
 
             migrationBuilder.DropTable(
-                name: "Students");
+                name: "Teachers");
         }
     }
 }
