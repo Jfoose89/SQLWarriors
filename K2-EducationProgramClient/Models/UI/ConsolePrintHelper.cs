@@ -90,86 +90,15 @@ namespace K2_EducationProgramClient.Models.UI
 
             return sb.ToString();
         }
-        // Prints a formatted title box in the console
-        public static void Title(string title)
-        {
-            string border = new string('═', 40);
-            string border2 = new string(' ', 40);
-            Console.WriteLine($"╔{border}╗");
-            Console.WriteLine($"║{border2}║");
-            Console.WriteLine($"║{title.ToUpper().PadLeft((40 + title.Length) / 2).PadRight(40)}║");
-            Console.WriteLine($"║{border2}║");
-            Console.WriteLine($"╚{border}╝");
 
-            //Console.ResetColor();
-        }
-        // Header for the interface
-        public static void Header(string headerName)
-        {
-            int width = 40;
-            string border = new string('═', 40);
-            Console.WriteLine($"╔{border}╗");
-            Console.WriteLine($"║ {headerName.ToUpper().PadRight(width - 1)}║");
-            Console.WriteLine($"╚{border}╝");
-            //Console.ResetColor();
-        }
-
-        // Prints a formatted menu box in the console
-        public static void Menu(string menuName, List<string> userMenu)
-        {
-            int width = 40;
-            string border = new string('═', 40);
-            Console.WriteLine($"╔{border}╗");
-            Console.WriteLine($"║ {menuName.ToUpper().PadRight(width - 1)}║");
-            Console.WriteLine($"║{border}║");
-            int nr = 1;
-            foreach (var selection in userMenu)
-            {
-                string line = $"║[{nr++}] {selection}";
-                int padding = width - (line.Length - 1); // minus 1 because '║' at start counts once
-                if (padding < 0) padding = 0; // prevent negative padding if text is too long
-
-                Console.WriteLine(line + new string(' ', padding) + "║");
-            }
-
-            string quitLine = "║[0] Exit";
-            int quitPadding = width - (quitLine.Length - 1);
-            if (quitPadding < 0) quitPadding = 0;
-            Console.WriteLine(quitLine + new string(' ', quitPadding) + "║");
-
-            Console.WriteLine($"╚{border}╝");
-            //Console.ResetColor();
-        }
-
-        public static string? AskChoice(string question)
-        {
-            string border = new string('═', 125);
-            Console.WriteLine($"{border}");
-            Console.Write($" {question} ");
-            string? choice = Console.ReadLine();
-
-            //Console.ResetColor();
-
-            if (string.IsNullOrWhiteSpace(choice))
-            {
-                Console.WriteLine("Choice cannot be empty.");
-                return null;
-            }
-                
-            else
-            {
-                return choice.Trim();
-            }
-
-        }
         // Admin title
         public static void AdminTitle(string title)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Yellow;
 
-            string border = new string('═', 115);
+            string border = new string('═', 50);
             Console.WriteLine($"╔{border}╗");
-            Console.WriteLine($"║{title.ToUpper().PadLeft((115 + title.Length) / 2).PadRight(115)}║");
+            Console.WriteLine($"║{title.ToUpper().PadLeft((50 + title.Length) / 2).PadRight(50)}║");
             Console.WriteLine($"╚{border}╝");
 
             //Console.ResetColor();
@@ -177,10 +106,10 @@ namespace K2_EducationProgramClient.Models.UI
         // Prints a formatted header box in the console
         public static void AdminHeader(string headerName)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Yellow;
 
             int width = 125;
-            string border = new string('═', 125);
+            string border = new string('═', 50);
             Console.WriteLine($"╔{border}╗");
             Console.WriteLine($"║ {headerName.ToUpper().PadRight(width - 1)}║");
             Console.WriteLine($"╚{border}╝");
@@ -189,10 +118,10 @@ namespace K2_EducationProgramClient.Models.UI
         // Prints a formatted menu box in the console
         public static void AdminMenu(string menuName, List<string> userMenu)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Yellow;
 
-            int width = 115;
-            string border = new string('═', 115);
+            int width = 50;
+            string border = new string('═', 50);
             Console.WriteLine($"╔{border}╗");
             Console.WriteLine($"║ {menuName.ToUpper().PadRight(width - 1)}║");
             Console.WriteLine($"║{border}║");
@@ -214,28 +143,9 @@ namespace K2_EducationProgramClient.Models.UI
             Console.WriteLine($"╚{border}╝");
             //Console.ResetColor();
         }
-        // Header for the exchange rate values
-        public static void ExchangeRateBox(string menuName, List<string> lines)
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-
-            int width = 40;
-            string border = new string('═', 40);
-            Console.WriteLine($"╔{border}╗");
-            Console.WriteLine($"║ {menuName.PadRight(width - 1)}║");
-            Console.WriteLine($"╠{border}╣");
-
-            foreach (var line in lines)
-            {
-                Console.WriteLine($"║ {line.PadRight(width - 1)}║");
-            }
-
-            Console.WriteLine($"╚{border}╝");
-            Console.ResetColor();
-        }
         public static void AdminSubTitle(string title)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             string subtitle = $"▶ {title} ◀";
             Console.WriteLine(subtitle + "\n");
             Console.ResetColor();
@@ -243,8 +153,8 @@ namespace K2_EducationProgramClient.Models.UI
 
         public static string? AdminAskChoice(string question)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            string border = new string('═', 117);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            string border = new string('═', 52);
             Console.WriteLine($"{border}");
             Console.Write($" {question} ");
             string? choice = Console.ReadLine();
@@ -264,80 +174,6 @@ namespace K2_EducationProgramClient.Models.UI
             }
                
         }
-
-        public static void UserSubTitle(string title)
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            string subtitle = $"▶ {title} ◀";
-            Console.WriteLine(subtitle + "\n");
-            Console.ResetColor();
-        }
-
-        // Prints a formatted user header box in the console
-        public static void UserHeader(string headerName)
-        {
-
-            Console.ForegroundColor = ConsoleColor.Green;
-
-            int width = 50;
-            string border = new string('═', 50);
-            Console.WriteLine($"╔{border}╗");
-            Console.WriteLine($"║ {headerName.ToUpper().PadRight(width - 1)}║");
-            Console.WriteLine($"╚{border}╝");
-            //Console.ResetColor();
-        }
-
-        public static void UserMenu(string menuName, List<string> userMenu)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-
-            int width = 50;
-            string border = new string('═', 50);
-            Console.WriteLine($"╔{border}╗");
-            Console.WriteLine($"║ {menuName.ToUpper().PadRight(width - 1)}║");
-            Console.WriteLine($"║{border}║");
-            int nr = 1;
-            foreach (var selection in userMenu)
-            {
-                string line = $"║[{nr++}] {selection}";
-                int padding = width - (line.Length - 1); // minus 1 because '║' at start counts once
-                if (padding < 0) padding = 0; // prevent negative padding if text is too long
-
-                Console.WriteLine(line + new string(' ', padding) + "║");
-            }
-
-            string quitLine = "║[0] Exit";
-            int quitPadding = width - (quitLine.Length - 1);
-            if (quitPadding < 0) quitPadding = 0;
-            Console.WriteLine(quitLine + new string(' ', quitPadding) + "║");
-
-            Console.WriteLine($"╚{border}╝");
-            //Console.ResetColor();
-        }
-
-        public static string? UserAskChoice(string question)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            string border = new string('═', 52);
-            Console.WriteLine($"{border}");
-            Console.Write($" {question} ");
-            string? choice = Console.ReadLine();
-
-            //Console.ResetColor();
-
-            if (string.IsNullOrWhiteSpace(choice))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Choice cannot be empty.");
-                Console.ResetColor();
-                return null;
-            }
-            else
-            {
-                return choice.Trim();
-            } 
-        }
-
         public static void Banner()
         {
             Console.OutputEncoding = Encoding.UTF8;

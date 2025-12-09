@@ -21,17 +21,40 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("MAIN MENU", new List<string>
                 {
+                    "ADD",
+                    "VIEW",
+                    "EDIT",
+                    "REMOVE"
+                    
+                });
+                var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
+
+                switch (choice)
+                {
+                    case "1": AddMenu(); break;
+                    case "2": ViewMenu(); break;
+                    case "3": EditMenu(); break;
+                    case "4": RemoveMenu(); break;
+                    case "0": running = false; break;
+                    default: ConsolePrintHelper.FaultyMenuChoice(); break;
+                }
+            }
+        }
+
+        public void AddMenu()
+        {
+            bool running = true;
+            while (running)
+            {
+                Console.Clear();
+                ConsolePrintHelper.AdminTitle("ADMIN");
+                ConsolePrintHelper.AdminMenu("ADD MENU", new List<string>
+                {
                     "Add New Course",
                     "Add New Teacher",
                     "Add New Room",
                     "Add New Enrollment",
-                    "Find Student and show [Courses, Grades]",
-                    "Add New Student",
-                    "Remove Student",
-                    "Edit Student",
-                    "Show All Active Courses and Enrolled Students",
-                    "Show All Students",
-                    "Show Report of all approved and non approved student per term. (half year, full year and quarter year)"
+                    "Add New Student"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
@@ -41,18 +64,85 @@ namespace K2_EducationProgramClient.Models.UI
                     case "2": AddTeacher(); break;
                     case "3": AddRoom(); break;
                     case "4": AddEnrollment(); break;
-                    case "5": FindStudent(); break;
-                    case "6": AddStudent(); break;
-                    case "7": RemoveStudent(); break;
-                    case "8": EditStudentMenu(); break;
-                    case "9": ShowActiveCoursesWithStudents(); break;
-                    case "10": ShowAllStudents(); break;
-                    case "11": ShowStudentsPerTerm(); break;
+                    case "5": AddStudent(); break;
                     case "0": running = false; break;
                     default: ConsolePrintHelper.FaultyMenuChoice(); break;
                 }
             }
         }
+
+        public void ViewMenu()
+        {
+            bool running = true;
+            while (running)
+            {
+                Console.Clear();
+                ConsolePrintHelper.AdminTitle("ADMIN");
+                ConsolePrintHelper.AdminMenu("VIEW MENU", new List<string>
+                {
+                    "Show All Students",
+                    "Find Student",
+                    "Show All Active Courses and Enrolled Students",
+                    "Show Student Report Per Term."
+                });
+                var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
+
+                switch (choice)
+                {
+                    case "1": ShowAllStudents();  break;
+                    case "2": FindStudent(); break;
+                    case "3": ShowActiveCoursesWithStudents(); break;
+                    case "4": ShowStudentsPerTerm(); break;
+                    case "0": running = false; break;
+                    default: ConsolePrintHelper.FaultyMenuChoice(); break;
+                }
+            }
+        }
+
+        public void EditMenu()
+        {
+            bool running = true;
+            while (running)
+            {
+                Console.Clear();
+                ConsolePrintHelper.AdminTitle("ADMIN");
+                ConsolePrintHelper.AdminMenu("EDIT MENU", new List<string>
+                {
+                    "Edit Student"
+                });
+                var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
+
+                switch (choice)
+                {
+                    case "1": EditStudentMenu(); break;
+                    case "0": running = false; break;
+                    default: ConsolePrintHelper.FaultyMenuChoice(); break;
+                }
+            }
+        }
+
+        public void RemoveMenu()
+        {
+            bool running = true;
+            while (running)
+            {
+                Console.Clear();
+                ConsolePrintHelper.AdminTitle("ADMIN");
+                ConsolePrintHelper.AdminMenu("REMOVE MENU", new List<string>
+                {
+                    "Remove Student"
+                });
+                var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
+
+                switch (choice)
+                {
+                    case "1": RemoveStudent(); break;
+                    case "0": running = false; break;
+                    default: ConsolePrintHelper.FaultyMenuChoice(); break;
+                }
+            }
+        }
+
         public void AddCourse()
         {
             Console.Clear();
