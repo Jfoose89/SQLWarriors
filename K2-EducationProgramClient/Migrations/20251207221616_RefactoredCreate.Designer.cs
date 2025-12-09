@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace K2_EducationProgramClient.Migrations
 {
     [DbContext(typeof(EducationProgramClientDbContext))]
-    [Migration("20251127135726_InitialEducationProgramDb")]
-    partial class InitialEducationProgramDb
+    [Migration("20251207221616_RefactoredCreate")]
+    partial class RefactoredCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,11 +36,14 @@ namespace K2_EducationProgramClient.Migrations
                     b.Property<DateOnly>("ActiveFrom")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly>("ActiveTo")
+                    b.Property<DateOnly?>("ActiveTo")
                         .HasColumnType("date");
 
                     b.Property<string>("CourseName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CourseStatus")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CourseID");
@@ -115,11 +118,16 @@ namespace K2_EducationProgramClient.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("FkTeacherID")
+                        .HasColumnType("int");
+
                     b.Property<string>("RoomName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RoomID");
+
+                    b.HasIndex("FkTeacherID");
 
                     b.ToTable("Rooms");
                 });
@@ -132,28 +140,26 @@ namespace K2_EducationProgramClient.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScheduleID"));
 
-                    b.Property<DateOnly>("EndDate")
+                    b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<int>("FkCourseID")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("FkRoomID")
                         .HasColumnType("int");
 
-                    b.Property<int>("FkTeacherID")
+                    b.Property<int>("FkTeacherCourseID")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ScheduleID");
 
-                    b.HasIndex("FkCourseID");
-
                     b.HasIndex("FkRoomID");
 
-                    b.HasIndex("FkTeacherID");
+                    b.HasIndex("FkTeacherCourseID");
 
                     b.ToTable("Schedules");
                 });
@@ -170,7 +176,7 @@ namespace K2_EducationProgramClient.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("EndDate")
+                    b.Property<DateOnly?>("EndDate")
                         .HasColumnType("date");
 
                     b.Property<string>("FirstName")
@@ -185,7 +191,6 @@ namespace K2_EducationProgramClient.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("StudentStatus")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StudentID");
@@ -218,16 +223,39 @@ namespace K2_EducationProgramClient.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("K2_EducationProgramClient.Models.TeacherCourse", b =>
+                {
+                    b.Property<int>("TeacherCourseID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeacherCourseID"));
+
+                    b.Property<int>("FkCourseID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FkTeacherID")
+                        .HasColumnType("int");
+
+                    b.HasKey("TeacherCourseID");
+
+                    b.HasIndex("FkCourseID");
+
+                    b.HasIndex("FkTeacherID");
+
+                    b.ToTable("TeacherCourses");
+                });
+
             modelBuilder.Entity("K2_EducationProgramClient.Models.Enrollment", b =>
                 {
                     b.HasOne("K2_EducationProgramClient.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("Enrollments")
                         .HasForeignKey("FkCourseID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("K2_EducationProgramClient.Models.Student", "Student")
-                        .WithMany()
+                        .WithMany("Enrollments")
                         .HasForeignKey("FkStudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -240,7 +268,7 @@ namespace K2_EducationProgramClient.Migrations
             modelBuilder.Entity("K2_EducationProgramClient.Models.Grade", b =>
                 {
                     b.HasOne("K2_EducationProgramClient.Models.Enrollment", "Enrollment")
-                        .WithMany()
+                        .WithMany("Grades")
                         .HasForeignKey("FkEnrollmentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -256,31 +284,85 @@ namespace K2_EducationProgramClient.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("K2_EducationProgramClient.Models.Room", b =>
+                {
+                    b.HasOne("K2_EducationProgramClient.Models.Teacher", "Teacher")
+                        .WithMany("Rooms")
+                        .HasForeignKey("FkTeacherID");
+
+                    b.Navigation("Teacher");
+                });
+
             modelBuilder.Entity("K2_EducationProgramClient.Models.Schedule", b =>
                 {
-                    b.HasOne("K2_EducationProgramClient.Models.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("FkCourseID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("K2_EducationProgramClient.Models.Room", "Room")
-                        .WithMany()
+                        .WithMany("Schedules")
                         .HasForeignKey("FkRoomID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("K2_EducationProgramClient.Models.TeacherCourse", "TeacherCourse")
+                        .WithMany("Schedules")
+                        .HasForeignKey("FkTeacherCourseID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("TeacherCourse");
+                });
+
+            modelBuilder.Entity("K2_EducationProgramClient.Models.TeacherCourse", b =>
+                {
+                    b.HasOne("K2_EducationProgramClient.Models.Course", "Course")
+                        .WithMany("TeacherCourses")
+                        .HasForeignKey("FkCourseID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("K2_EducationProgramClient.Models.Teacher", "Teacher")
-                        .WithMany()
+                        .WithMany("TeacherCourses")
                         .HasForeignKey("FkTeacherID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
 
-                    b.Navigation("Room");
-
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("K2_EducationProgramClient.Models.Course", b =>
+                {
+                    b.Navigation("Enrollments");
+
+                    b.Navigation("TeacherCourses");
+                });
+
+            modelBuilder.Entity("K2_EducationProgramClient.Models.Enrollment", b =>
+                {
+                    b.Navigation("Grades");
+                });
+
+            modelBuilder.Entity("K2_EducationProgramClient.Models.Room", b =>
+                {
+                    b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("K2_EducationProgramClient.Models.Student", b =>
+                {
+                    b.Navigation("Enrollments");
+                });
+
+            modelBuilder.Entity("K2_EducationProgramClient.Models.Teacher", b =>
+                {
+                    b.Navigation("Rooms");
+
+                    b.Navigation("TeacherCourses");
+                });
+
+            modelBuilder.Entity("K2_EducationProgramClient.Models.TeacherCourse", b =>
+                {
+                    b.Navigation("Schedules");
                 });
 #pragma warning restore 612, 618
         }
