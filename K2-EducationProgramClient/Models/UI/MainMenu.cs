@@ -172,20 +172,7 @@ namespace K2_EducationProgramClient.Models.UI
                 Console.Write("Enter a date (yyyy-MM-dd): ");
             }
 
-            var course = new Course
-            {
-                CourseName = inCourseName,
-                CourseStatus = inCourseStatus,
-                ActiveFrom = inCourseStartDate,
-                ActiveTo = inCourseEndDate
-            };
-
-            if (db is not null)
-            {
-                db.Courses.Add(course);
-                db.SaveChanges();
-                Console.WriteLine($"Course added: '{inCourseName}' | {inCourseStartDate}-{inCourseEndDate} | {inCourseStatus}");
-            }
+            MainMenuServices.CreateCourse(db, inCourseName, inCourseStatus, inCourseStartDate, inCourseEndDate);
 
             ConsolePrintHelper.Pause();
         }
@@ -207,19 +194,7 @@ namespace K2_EducationProgramClient.Models.UI
                 return;
             }
 
-            var teacher = new Teacher
-            {
-                FirstName = inTeacherFirstName,
-                LastName = inTeacherLastName,
-                Email = inTeacherEmail
-            };
-
-            if (db is not null)
-            {
-                db.Teachers.Add(teacher);
-                db.SaveChanges();
-                Console.WriteLine($"Teacher added: '{inTeacherFirstName} {inTeacherLastName}' | {inTeacherEmail}");
-            }
+            MainMenuServices.CreateTeacher(db, inTeacherFirstName, inTeacherLastName, inTeacherEmail);
 
             ConsolePrintHelper.Pause();
         }
@@ -253,19 +228,7 @@ namespace K2_EducationProgramClient.Models.UI
                 return;
             }
 
-            var room = new Room
-            {
-                RoomName = inRoomName,
-                Capacity = inRoomCapacity
-                // Teacher = inRoomTeacher
-            };
-
-            if (db is not null)
-            {
-                db.Rooms.Add(room);
-                db.SaveChanges();
-                Console.WriteLine($"Teacher added: '{inRoomName}' | {inRoomCapacity}");
-            }
+            MainMenuServices.CreateRoom(db, inRoomName, inRoomCapacity, inRoomTeacher);
 
             ConsolePrintHelper.Pause();
         }
@@ -282,17 +245,9 @@ namespace K2_EducationProgramClient.Models.UI
                 Console.Write("Enter a date (yyyy-MM-dd): ");
             }
 
-            var enrollment = new Enrollment
-            {
-                EnrollmentDate = inEnrollmentDate
-            };
+            MainMenuServices.CreateEnrollment(db, inEnrollmentDate);
 
-            if (db is not null)
-            {
-                db.Enrollments.Add(enrollment);
-                db.SaveChanges();
-                Console.WriteLine($"Enrollment added: {inEnrollmentDate}");
-            }
+            ConsolePrintHelper.Pause();
         }
         public void FindStudent()
         {
@@ -302,22 +257,10 @@ namespace K2_EducationProgramClient.Models.UI
 
             string? inStudentName = ConsolePrintHelper.AdminAskChoice("Enter Name (First or Last):");
 
-            if (string.IsNullOrWhiteSpace(inStudentName))
-            {
-                ConsolePrintHelper.PrintError("Email cannot be blank.");
-                ConsolePrintHelper.Pause();
-                return;
-            }
-
-            if (db is not null)
-            {
-                var foundStudents = db.Students
-                                    .Where(s => s.FirstName == inStudentName || s.LastName == inStudentName)
-                                    .Select(s => $"({s.StudentID}) {s.FirstName} {s.LastName} | {s.Email}") 
-                                    .ToList();
-
-                ConsolePrintHelper.AdminMenu("-", foundStudents);
-            }
+            if (inStudentName != null)
+                MainMenuServices.FindStudentByNameAndPrintInfo(db, inStudentName);
+            else
+                Console.WriteLine("Student name cannot be empty!");
 
             ConsolePrintHelper.Pause();
         }
@@ -339,22 +282,7 @@ namespace K2_EducationProgramClient.Models.UI
                 return;
             }
 
-            var student = new Student
-            {
-                FirstName = inStudentFirstName,
-                LastName = inStudentLastName,
-                Email = inStudentEmail,
-                StartDate = DateOnly.FromDateTime(DateTime.Today),
-                EndDate = DateOnly.FromDateTime(DateTime.Today.AddYears(2)),
-                StudentStatus = "Active"
-            };
-
-            if(db is not null)
-            {
-                db.Students.Add(student);
-                db.SaveChanges();
-                Console.WriteLine($"Student added: '{inStudentFirstName} {inStudentLastName}' | {inStudentEmail} | {DateOnly.FromDateTime(DateTime.Today)} | {DateOnly.FromDateTime(DateTime.Today.AddYears(2))} | 'Active'"); 
-            }
+            MainMenuServices.CreateStudent(db, inStudentFirstName, inStudentLastName, inStudentEmail, DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddYears(2)), "Active");
 
             ConsolePrintHelper.Pause();
         }
@@ -366,20 +294,8 @@ namespace K2_EducationProgramClient.Models.UI
 
             string? studentEmail = ConsolePrintHelper.AdminAskChoice("Enter Email:");
 
-            if (string.IsNullOrWhiteSpace(studentEmail))
-            {
-                ConsolePrintHelper.PrintError("Email cannot be blank.");
-                ConsolePrintHelper.Pause();
-                return;
-            }
+            MainMenuServices.DeleteStudentByEmail(db, studentEmail);
 
-            if (db is not null)
-            {
-                var student = db.Students.FirstOrDefault(s => s.Email == studentEmail);
-                Console.WriteLine($"Student removed: '{student.FirstName} {student.LastName}' | {student.Email}");
-                db.Students.Remove(student);
-                db.SaveChanges();
-            }
             ConsolePrintHelper.Pause();
         }
         public void EditStudentMenu()
@@ -392,14 +308,13 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
             ConsolePrintHelper.AdminSubTitle("Courses list");
 
-            if (db is not null)
-            {
-                var courseData = db.Courses
-                    .Select(c => $"({c.CourseID}) '{c.CourseName}' | {c.ActiveFrom}-{c.ActiveTo} | {c.CourseStatus}")
-                    .ToList();
+            var courseList = MainMenuServices.GetCoursesAsList(db);
 
-                ConsolePrintHelper.AdminMenu("-", courseData);
-            }
+            if(courseList != null)
+                ConsolePrintHelper.AdminMenu("-", MainMenuServices.GetCoursesAsList(db));
+            else
+                Console.WriteLine("Courses could not be found!");
+
             ConsolePrintHelper.Pause();
         }
         public void ShowAllStudents()
@@ -408,14 +323,8 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
             ConsolePrintHelper.AdminSubTitle("Students list");
 
-            if (db is not null)
-            {
-                var studentsName = db.Students
-                    .Select(s => $"({s.StudentID}) {s.FirstName} {s.LastName} | {s.Email}")
-                    .ToList();
+            ConsolePrintHelper.AdminMenu("-", MainMenuServices.GetStudentsAsList(db));
 
-                ConsolePrintHelper.AdminMenu("-", studentsName);
-            }
             ConsolePrintHelper.Pause();
         }
         public void ShowStudentsPerTerm()

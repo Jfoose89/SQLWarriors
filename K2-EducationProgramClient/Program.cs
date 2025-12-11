@@ -35,7 +35,7 @@ namespace K2_EducationProgramClient
             using var db = provider.GetRequiredService<EducationProgramClientDbContext>();
 
             // Ensure DB is created
-            db.Database.EnsureCreated();
+            //db.Database.EnsureCreated();
 
             var MainMenu = new MainMenu();
             MainMenu.db = db;
