@@ -96,9 +96,9 @@ namespace K2_EducationProgramClient.Models.UI
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
 
-            string border = new string('═', 50);
+            string border = new string('═', 100);
             Console.WriteLine($"╔{border}╗");
-            Console.WriteLine($"║{title.ToUpper().PadLeft((50 + title.Length) / 2).PadRight(50)}║");
+            Console.WriteLine($"║{title.ToUpper().PadLeft((100 + title.Length) / 2).PadRight(100)}║");
             Console.WriteLine($"╚{border}╝");
 
             //Console.ResetColor();
@@ -109,7 +109,7 @@ namespace K2_EducationProgramClient.Models.UI
             Console.ForegroundColor = ConsoleColor.Yellow;
 
             int width = 125;
-            string border = new string('═', 50);
+            string border = new string('═', 100);
             Console.WriteLine($"╔{border}╗");
             Console.WriteLine($"║ {headerName.ToUpper().PadRight(width - 1)}║");
             Console.WriteLine($"╚{border}╝");
@@ -120,8 +120,8 @@ namespace K2_EducationProgramClient.Models.UI
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
 
-            int width = 50;
-            string border = new string('═', 50);
+            int width = 100;
+            string border = new string('═', 100);
             Console.WriteLine($"╔{border}╗");
             Console.WriteLine($"║ {menuName.ToUpper().PadRight(width - 1)}║");
             Console.WriteLine($"║{border}║");
@@ -143,6 +143,34 @@ namespace K2_EducationProgramClient.Models.UI
             Console.WriteLine($"╚{border}╝");
             //Console.ResetColor();
         }
+
+        // Prints a formatted list box in the console
+        public static void AdminList(string listName, List<string> listToPrint)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            int width = 100;
+            string border = new string('═', 100);
+            Console.WriteLine($"╔{border}╗");
+            Console.WriteLine($"║ {listName.ToUpper().PadRight(width - 1)}║");
+            Console.WriteLine($"║{border}║");
+            foreach (var listItem in listToPrint)
+            {
+                string line = $"║ - {listItem}";
+                int padding = width - (line.Length - 1); // minus 1 because '║' at start counts once
+                if (padding < 0) padding = 0; // prevent negative padding if text is too long
+
+                Console.WriteLine(line + new string(' ', padding) + "║");
+            }
+
+            string quitLine = "║";
+            int quitPadding = width - (quitLine.Length - 1);
+            if (quitPadding < 0) quitPadding = 0;
+            Console.WriteLine(quitLine + new string(' ', quitPadding) + "║");
+
+            Console.WriteLine($"╚{border}╝");
+            //Console.ResetColor();
+        }
         public static void AdminSubTitle(string title)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -154,7 +182,7 @@ namespace K2_EducationProgramClient.Models.UI
         public static string? AdminAskChoice(string question)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            string border = new string('═', 52);
+            string border = new string('═', 102);
             Console.WriteLine($"{border}");
             Console.Write($" {question} ");
             string? choice = Console.ReadLine();
@@ -172,8 +200,19 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 return choice.Trim();
             }
-               
         }
+
+        public static bool NullInputWarning(string inString)
+        {
+            if (string.IsNullOrWhiteSpace(inString))
+            {
+                ConsolePrintHelper.PrintError("Input cannot be blank.");
+                ConsolePrintHelper.Pause();
+                return true;
+            }
+            return false;
+        }
+
         public static void Banner()
         {
             Console.OutputEncoding = Encoding.UTF8;

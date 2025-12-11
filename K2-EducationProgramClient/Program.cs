@@ -37,6 +37,10 @@ namespace K2_EducationProgramClient
             // Ensure DB is created
             //db.Database.EnsureCreated();
 
+            var seedData = new SeedData();
+            seedData.ClearDatabase(db);
+            seedData.AddSeedData(db);
+
             var MainMenu = new MainMenu();
             MainMenu.db = db;
 

@@ -16,7 +16,7 @@ namespace K2_EducationProgramClient.Data
         // NOT USING JSON
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-7MHGV6C\\SQLEXPRESS;Database=EducationProgramDB;Trusted_Connection=True;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=EducationProgramDB;Trusted_Connection=True;TrustServerCertificate=True");
         }
 
         // USING JSON

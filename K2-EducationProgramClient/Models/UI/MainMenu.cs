@@ -3,6 +3,7 @@ using Microsoft.Graph.Models;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("MAIN MENU", new List<string>
                 {
-                    "ADD",
+                    "CREATE",
                     "VIEW",
                     "EDIT",
                     "REMOVE"
@@ -31,7 +32,7 @@ namespace K2_EducationProgramClient.Models.UI
 
                 switch (choice)
                 {
-                    case "1": AddMenu(); break;
+                    case "1": CreateMenu(); break;
                     case "2": ViewMenu(); break;
                     case "3": EditMenu(); break;
                     case "4": RemoveMenu(); break;
@@ -41,7 +42,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
         }
 
-        public void AddMenu()
+        public void CreateMenu()
         {
             bool running = true;
             while (running)
@@ -50,21 +51,23 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("ADD MENU", new List<string>
                 {
-                    "Add New Course",
-                    "Add New Teacher",
-                    "Add New Room",
-                    "Add New Enrollment",
-                    "Add New Student"
+                    "New Course",
+                    "New Teacher",
+                    "New Room",
+                    "New Enrollment",
+                    "New Student",
+                    "New Schedule",
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
                 switch (choice)
                 {
-                    case "1": AddCourse(); break;
-                    case "2": AddTeacher(); break;
-                    case "3": AddRoom(); break;
-                    case "4": AddEnrollment(); break;
-                    case "5": AddStudent(); break;
+                    case "1": CreateCourse(); break;
+                    case "2": CreateTeacher(); break;
+                    case "3": CreateRoom(); break;
+                    case "4": CreateEnrollment(); break;
+                    case "5": CreateStudent(); break;
+                    case "6": CreateSchedule(); break;
                     case "0": running = false; break;
                     default: ConsolePrintHelper.FaultyMenuChoice(); break;
                 }
@@ -108,13 +111,13 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("EDIT MENU", new List<string>
                 {
-                    "Edit Student"
+                    "Register Student To Course"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
                 switch (choice)
                 {
-                    case "1": EditStudentMenu(); break;
+                    case "1": RegisterStudentToCourse(); break;
                     case "0": running = false; break;
                     default: ConsolePrintHelper.FaultyMenuChoice(); break;
                 }
@@ -130,20 +133,60 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("REMOVE MENU", new List<string>
                 {
-                    "Remove Student"
+                    "Remove Student",
+                    "Clear and reset data table"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
                 switch (choice)
                 {
                     case "1": RemoveStudent(); break;
+                    case "2": ClearAndResetTableMenu(); break;
                     case "0": running = false; break;
                     default: ConsolePrintHelper.FaultyMenuChoice(); break;
                 }
             }
         }
 
-        public void AddCourse()
+        public void ClearAndResetTableMenu()
+        {
+            bool running = true;
+            while (running)
+            {
+                Console.Clear();
+                ConsolePrintHelper.AdminTitle("ADMIN");
+                ConsolePrintHelper.AdminMenu("CLEAR & RESET MENU", new List<string>
+                {
+                    "Courses",
+                    "Enrollments",
+                    "Grades",
+                    "Rooms",
+                    "Schedules",
+                    "Students",
+                    "Teachers",
+                    "Tearcher Courses"
+                });
+                var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
+                if (db is not null)
+                {
+                    switch (choice)
+                    {
+                        case "1": MainMenuServices.ClearAndReseedTable(db, "Courses"); ConsolePrintHelper.Pause(); break;
+                        case "2": MainMenuServices.ClearAndReseedTable(db, "Enrollments"); ConsolePrintHelper.Pause(); break;
+                        case "3": MainMenuServices.ClearAndReseedTable(db, "Grades"); ConsolePrintHelper.Pause(); break;
+                        case "4": MainMenuServices.ClearAndReseedTable(db, "Rooms"); ConsolePrintHelper.Pause(); break;
+                        case "5": MainMenuServices.ClearAndReseedTable(db, "Schedules"); ConsolePrintHelper.Pause(); break;
+                        case "6": MainMenuServices.ClearAndReseedTable(db, "Students"); ConsolePrintHelper.Pause(); break;
+                        case "7": MainMenuServices.ClearAndReseedTable(db, "Teachers"); ConsolePrintHelper.Pause(); break;
+                        case "8": MainMenuServices.ClearAndReseedTable(db, "TearcherCourses"); ConsolePrintHelper.Pause(); break;
+                        case "0": running = false; break;
+                        default: ConsolePrintHelper.FaultyMenuChoice(); break;
+                    }
+                }
+            }
+        }
+
+        public void CreateCourse()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -176,7 +219,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void AddTeacher()
+        public void CreateTeacher()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -198,7 +241,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void AddRoom()
+        public void CreateRoom()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -219,33 +262,33 @@ namespace K2_EducationProgramClient.Models.UI
                 Console.Write("Enter a number: ");
             }
 
-            // TODO: Find teacher in list and assign to room.
-            string? inRoomTeacher = ConsolePrintHelper.AdminAskChoice("Assign Teacher To Room: ");
-            if (string.IsNullOrWhiteSpace(inRoomTeacher))
+            ConsolePrintHelper.AdminList("Teachers", MainMenuServices.GetTeachersAsList(db));
+            string? inRoomTeacherID = ConsolePrintHelper.AdminAskChoice("Assign Teacher To Room: ");
+            if (string.IsNullOrWhiteSpace(inRoomTeacherID))
             {
                 ConsolePrintHelper.PrintError("Input cannot be blank.");
                 ConsolePrintHelper.Pause();
                 return;
             }
 
-            MainMenuServices.CreateRoom(db, inRoomName, inRoomCapacity, inRoomTeacher);
+            MainMenuServices.CreateRoom(db, inRoomName, inRoomCapacity, int.Parse(inRoomTeacherID));
 
             ConsolePrintHelper.Pause();
         }
-        public void AddEnrollment()
+        public void CreateEnrollment()
         {
-            Console.Clear();
-            ConsolePrintHelper.AdminTitle("ADMIN MENU");
-            ConsolePrintHelper.AdminSubTitle("Create new enrollment");
+            //Console.Clear();
+            //ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            //ConsolePrintHelper.AdminSubTitle("Create new enrollment");
 
-            DateOnly inEnrollmentDate;
-            while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Enrollment Start Date (YYYY-MM-DD): "), out inEnrollmentDate))
-            {
-                Console.WriteLine("Invalid input. Please enter a valid date.");
-                Console.Write("Enter a date (yyyy-MM-dd): ");
-            }
+            //DateOnly inEnrollmentDate;
+            //while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Enrollment Start Date (YYYY-MM-DD): "), out inEnrollmentDate))
+            //{
+            //    Console.WriteLine("Invalid input. Please enter a valid date.");
+            //    Console.Write("Enter a date (yyyy-MM-dd): ");
+            //}
 
-            MainMenuServices.CreateEnrollment(db, inEnrollmentDate);
+            //MainMenuServices.CreateEnrollment(db, inEnrollmentDate);
 
             ConsolePrintHelper.Pause();
         }
@@ -264,7 +307,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void AddStudent()
+        public void CreateStudent()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -286,6 +329,60 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
+
+        public void CreateSchedule()
+        {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Create new schedule");
+
+            string? inDate = ConsolePrintHelper.AdminAskChoice("Enter Schedule Date (YYYY-MM-DD): ");
+            ConsolePrintHelper.NullInputWarning(inDate);
+
+            ConsolePrintHelper.AdminList("Courses", MainMenuServices.GetCoursesAsList(db));
+            string? inCourseID = ConsolePrintHelper.AdminAskChoice("Enter Course ID: ");
+            ConsolePrintHelper.NullInputWarning(inCourseID);
+            bool exists = db.Courses.Any(c => c.CourseID == int.Parse(inCourseID));
+            if(!exists)
+            {
+                ConsolePrintHelper.PrintError($"Course with ID ({inCourseID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            ConsolePrintHelper.AdminList("Rooms", MainMenuServices.GetRoomsAsList(db));
+            string? inRoomID = ConsolePrintHelper.AdminAskChoice("Enter Room ID: ");
+            ConsolePrintHelper.NullInputWarning(inRoomID);
+            exists = db.Rooms.Any(r => r.RoomID == int.Parse(inRoomID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($"Room with ID ({inRoomID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            ConsolePrintHelper.AdminList("Teachers", MainMenuServices.GetTeachersAsList(db));
+            string? inTeacherID = ConsolePrintHelper.AdminAskChoice("Enter Teacher ID: ");
+            ConsolePrintHelper.NullInputWarning(inTeacherID);
+            exists = db.Teachers.Any(t => t.TeacherID == int.Parse(inTeacherID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($"Teacher with ID ({inTeacherID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            string? inStartTime = ConsolePrintHelper.AdminAskChoice("Enter Start Time (HH:MI:SS): ");
+            ConsolePrintHelper.NullInputWarning(inStartTime);
+
+            string? inEndTime = ConsolePrintHelper.AdminAskChoice("Enter End Time (HH:MI:SS): ");
+            ConsolePrintHelper.NullInputWarning(inEndTime);
+
+            MainMenuServices.CreateSchedule(db, DateOnly.Parse(inDate), int.Parse(inCourseID), int.Parse(inRoomID), DateTime.Parse($"{inDate} {inStartTime}"), DateTime.Parse($"{inDate} {inEndTime}"));
+
+            ConsolePrintHelper.Pause();
+        }
+
         public void RemoveStudent()
         {
             Console.Clear();
@@ -298,8 +395,50 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void EditStudentMenu()
+        public void RegisterStudentToCourse()
         {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Register Student To Course");
+
+            ConsolePrintHelper.AdminList("Students", MainMenuServices.GetStudentsAsList(db));
+            string? studentID = ConsolePrintHelper.AdminAskChoice("Enter Student ID:");
+            bool exists = db.Students.Any(s => s.StudentID == int.Parse(studentID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($"Student with ID ({studentID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            ConsolePrintHelper.AdminList("Courses", MainMenuServices.GetCoursesAsList(db));
+            string? courseID = ConsolePrintHelper.AdminAskChoice("Enter Course ID:");
+            exists = db.Courses.Any(c => c.CourseID == int.Parse(courseID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($"Course with ID ({courseID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            string? inDate = ConsolePrintHelper.AdminAskChoice("Enter Enrollment Date (YYYY-MM-DD): ");
+            ConsolePrintHelper.NullInputWarning(inDate);
+
+            try
+            {
+                // New enrollment
+                MainMenuServices.RegisterStudentToCourseByID(db, int.Parse(studentID), int.Parse(courseID), DateOnly.Parse(inDate));
+            }
+            catch (DuplicateNameException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+            }
+
+            ConsolePrintHelper.Pause();
         }
 
         public void ShowActiveCoursesWithStudents()
@@ -311,7 +450,7 @@ namespace K2_EducationProgramClient.Models.UI
             var courseList = MainMenuServices.GetCoursesAsList(db);
 
             if(courseList != null)
-                ConsolePrintHelper.AdminMenu("-", MainMenuServices.GetCoursesAsList(db));
+                ConsolePrintHelper.AdminList("-", MainMenuServices.GetCoursesAsList(db));
             else
                 Console.WriteLine("Courses could not be found!");
 
@@ -323,7 +462,7 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
             ConsolePrintHelper.AdminSubTitle("Students list");
 
-            ConsolePrintHelper.AdminMenu("-", MainMenuServices.GetStudentsAsList(db));
+            ConsolePrintHelper.AdminList("-", MainMenuServices.GetStudentsAsList(db));
 
             ConsolePrintHelper.Pause();
         }

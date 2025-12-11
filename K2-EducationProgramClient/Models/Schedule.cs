@@ -22,9 +22,9 @@ namespace K2_EducationProgramClient.Models
 
 
         [ForeignKey("FkTeacherCourseID")]       
-        public required TeacherCourse TeacherCourse { get; set; }
+        public TeacherCourse TeacherCourse { get; set; }
 
         [ForeignKey("FkRoomID")]        
-        public required Room Room { get; set; }
+        public Room Room { get; set; }
     }
 }
