@@ -156,7 +156,7 @@ namespace K2_EducationProgramClient.Models.UI
             Console.WriteLine($"║{border}║");
             foreach (var listItem in listToPrint)
             {
-                string line = $"║ - {listItem}";
+                string line = $"║ * {listItem}";
                 int padding = width - (line.Length - 1); // minus 1 because '║' at start counts once
                 if (padding < 0) padding = 0; // prevent negative padding if text is too long
 

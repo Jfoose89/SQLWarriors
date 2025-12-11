@@ -224,6 +224,56 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
+        internal static List<string> GetEnrollmentsAsList(EducationProgramClientDbContext? db)
+        {
+            if (db is not null)
+            {
+                var enrollments = db.Enrollments.Select(e => $"({e.Student.StudentID}) {e.Student.FirstName} {e.Student.LastName} | {e.Course.CourseName} | {e.EnrollmentDate}").ToList();
+
+                return enrollments;
+            }
+
+            return null;
+        }
+
+        internal static List<string> GetGradesAsList(EducationProgramClientDbContext? db)
+        {
+            if (db is not null)
+            {
+                var grades = db.Grades.Select(g => $"({g.GradeID}) {g.Enrollment.Student.FirstName} {g.Enrollment.Student.LastName} - [ {g.GradeValue}:{g.Enrollment.Course.CourseName} | {g.Teacher.FirstName} {g.Teacher.LastName}]").ToList();
+
+                return grades;
+            }
+
+            return null;
+        }
+
+        internal static List<string> GetRoomsAsList(EducationProgramClientDbContext? db)
+        {
+            if (db is not null)
+            {
+                var rooms = db.Rooms
+                    .Select(r => $"NR:{r.RoomID} - {r.RoomName} | Max Pers: {r.Capacity} | {r.Teacher.FirstName} {r.Teacher.LastName}")
+                    .ToList();
+
+                return rooms;
+            }
+
+            return null;
+        }
+
+        internal static List<string> GetSchedulesAsList(EducationProgramClientDbContext? db)
+        {
+            if (db is not null)
+            {
+                var schedules = db.Schedules.Select(s => $"{s.Date}|[{s.StartTime.TimeOfDay}] - [{s.EndTime.TimeOfDay}] | ({s.FkRoomID}) {s.Room.RoomName} | {s.TeacherCourse.Course.CourseName} - {s.TeacherCourse.Teacher.FirstName} {s.TeacherCourse.Teacher.LastName}").ToList();
+
+                return schedules;
+            }
+
+            return null;
+        }
+
         internal static List<string> GetStudentsAsList(EducationProgramClientDbContext? db)
         {
             if (db is not null)
@@ -252,15 +302,15 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
-        internal static List<string> GetRoomsAsList(EducationProgramClientDbContext? db)
+        internal static List<string> GetTeacherCoursesAsList(EducationProgramClientDbContext? db)
         {
             if (db is not null)
             {
-                var rooms = db.Rooms
-                    .Select(r => $"({r.RoomID}) {r.RoomName} {r.Capacity} | {r.Teacher}")
+                var teacherCourses = db.TeacherCourses
+                    .Select(t => $"{t.Course.CourseName} - {t.Teacher.FirstName} {t.Teacher.LastName}")
                     .ToList();
 
-                return rooms;
+                return teacherCourses;
             }
 
             return null;
@@ -277,7 +327,5 @@ namespace K2_EducationProgramClient.Models.UI
             // Re-enable constraints
             db.Database.ExecuteSqlRaw($"ALTER TABLE [{tableName}] CHECK CONSTRAINT ALL;");
         }
-
-        
     }
 }

@@ -83,7 +83,7 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("VIEW MENU", new List<string>
                 {
-                    "Show All Students",
+                    "SHOW ALL",
                     "Find Student",
                     "Show All Active Courses and Enrolled Students",
                     "Show Student Report Per Term."
@@ -92,12 +92,79 @@ namespace K2_EducationProgramClient.Models.UI
 
                 switch (choice)
                 {
-                    case "1": ShowAllStudents();  break;
+                    case "1": ShowAllSelect();  break;
                     case "2": FindStudent(); break;
                     case "3": ShowActiveCoursesWithStudents(); break;
                     case "4": ShowStudentsPerTerm(); break;
                     case "0": running = false; break;
                     default: ConsolePrintHelper.FaultyMenuChoice(); break;
+                }
+            }
+        }
+
+        public void ShowAllSelect()
+        {
+            bool running = true;
+            while (running)
+            {
+                Console.Clear();
+                ConsolePrintHelper.AdminTitle("ADMIN");
+                ConsolePrintHelper.AdminMenu("SHOW ALL MENU", new List<string>
+                {
+                    "Courses",
+                    "Enrollments",
+                    "Grades",
+                    "Rooms",
+                    "Schedules",
+                    "Teachers",
+                    "Teacher Courses"
+                });
+                var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
+
+                switch (choice)
+                {
+                    case "1": 
+                        ConsolePrintHelper.AdminList("COURSES", MainMenuServices.GetCoursesAsList(db)); 
+                        ConsolePrintHelper.Pause(); 
+                        break;
+
+                    case "2": 
+                        ConsolePrintHelper.AdminList("ENROLLMENTS", MainMenuServices.GetEnrollmentsAsList(db)); 
+                        ConsolePrintHelper.Pause(); 
+                        break;
+
+                    case "3": 
+                        ConsolePrintHelper.AdminList("GRADES", MainMenuServices.GetGradesAsList(db)); 
+                        ConsolePrintHelper.Pause(); 
+                        break;
+
+                    case "4": 
+                        ConsolePrintHelper.AdminList("ROOMS", MainMenuServices.GetRoomsAsList(db)); 
+                        ConsolePrintHelper.Pause(); 
+                        break;
+
+                    case "5": 
+                        ConsolePrintHelper.AdminList("SCHEDULES", MainMenuServices.GetSchedulesAsList(db)); 
+                        ConsolePrintHelper.Pause(); 
+                        break;
+
+                    case "6": 
+                        ConsolePrintHelper.AdminList("TEACHERS", MainMenuServices.GetTeachersAsList(db)); 
+                        ConsolePrintHelper.Pause(); 
+                        break;
+
+                    case "7": 
+                        ConsolePrintHelper.AdminList("TEACHER COURSES", MainMenuServices.GetTeacherCoursesAsList(db)); 
+                        ConsolePrintHelper.Pause(); 
+                        break;
+
+                    case "0": 
+                        running = false; 
+                        break;
+
+                    default: 
+                        ConsolePrintHelper.FaultyMenuChoice(); 
+                        break;
                 }
             }
         }
@@ -456,16 +523,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void ShowAllStudents()
-        {
-            Console.Clear();
-            ConsolePrintHelper.AdminTitle("ADMIN MENU");
-            ConsolePrintHelper.AdminSubTitle("Students list");
 
-            ConsolePrintHelper.AdminList("-", MainMenuServices.GetStudentsAsList(db));
-
-            ConsolePrintHelper.Pause();
-        }
         public void ShowStudentsPerTerm()
         {
         }
