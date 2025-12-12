@@ -26,7 +26,7 @@ namespace K2_EducationProgramClient.Data
 
                 // Student: Requires none
                 MainMenuServices.CreateStudent(db, "SAlice", "SAlicesson", "salice@email.com", DateOnly.Parse("0001-01-01"), DateOnly.Parse("0001-01-01"), "Active");
-                MainMenuServices.CreateStudent(db, "SBob", "SBobsson", "sbob@email.com", DateOnly.Parse("0002-02-02"), DateOnly.Parse("0002-02-02"), "Inactive");
+                MainMenuServices.CreateStudent(db, "SBob", "SBobsson", "sbob@email.com", DateOnly.Parse("0002-02-02"), DateOnly.Parse("0002-02-02"), "Active");
                 MainMenuServices.CreateStudent(db, "SCharlie", "SCharliesson", "scharlie@email.com", DateOnly.Parse("0003-03-03"), DateOnly.Parse("0003-03-03"), "Active");
 
                 // Room: Requires teachers
@@ -40,9 +40,9 @@ namespace K2_EducationProgramClient.Data
                 MainMenuServices.CreateEnrollment(db, 3, 3, DateOnly.Parse("0003-03-03"));
 
                 // Grade: Requires enrollment, teacher
-                MainMenuServices.CreateGrade(db, 1, 1, DateOnly.Parse("0001-01-01"), "IG");
-                MainMenuServices.CreateGrade(db, 2, 2, DateOnly.Parse("0002-02-02"), "G");
-                MainMenuServices.CreateGrade(db, 3, 3, DateOnly.Parse("0003-03-03"), "VG");
+                MainMenuServices.CreateGrade(db, 1, 1, DateOnly.Parse("0001-01-01"), "F");
+                MainMenuServices.CreateGrade(db, 2, 2, DateOnly.Parse("0002-02-02"), "C");
+                MainMenuServices.CreateGrade(db, 3, 3, DateOnly.Parse("0003-03-03"), "A");
 
                 // TeacherCourse: Requires teacher, course
                 MainMenuServices.CreateTeacherCourse(db, 1, 1);

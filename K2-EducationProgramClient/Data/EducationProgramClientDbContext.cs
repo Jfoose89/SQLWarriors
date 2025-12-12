@@ -63,6 +63,17 @@ namespace K2_EducationProgramClient.Data
                 .HasOne(s => s.Room)
                 .WithMany(r => r.Schedules)
                 .HasForeignKey(s => s.FkRoomID);
+
+            // Disable EF Core’s OUTPUT clause for tables.
+            // (EF Core + SQL Server limitation, SQL Server blocks operation when EF Core tries to use the OUTPUT clause to get identity values)
+            modelBuilder.Entity<Enrollment>()
+                .ToTable(tb => tb.UseSqlOutputClause(false));
+
+            modelBuilder.Entity<Schedule>()
+                .ToTable(tb => tb.UseSqlOutputClause(false));
+
+            modelBuilder.Entity<Grade>()
+                .ToTable(tb => tb.UseSqlOutputClause(false));
         }
     }
 }     
