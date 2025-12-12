@@ -116,6 +116,7 @@ namespace K2_EducationProgramClient.Models.UI
                     "Grades",
                     "Rooms",
                     "Schedules",
+                    "Students",
                     "Teachers",
                     "Teacher Courses"
                 });
@@ -149,11 +150,16 @@ namespace K2_EducationProgramClient.Models.UI
                         break;
 
                     case "6": 
-                        ConsolePrintHelper.AdminList("TEACHERS", MainMenuServices.GetTeachersAsList(db)); 
+                        ConsolePrintHelper.AdminList("STUDENTS", MainMenuServices.GetStudentsAsList(db)); 
                         ConsolePrintHelper.Pause(); 
                         break;
 
-                    case "7": 
+                    case "7":
+                        ConsolePrintHelper.AdminList("TEACHERS", MainMenuServices.GetTeachersAsList(db));
+                        ConsolePrintHelper.Pause();
+                        break;
+
+                    case "8": 
                         ConsolePrintHelper.AdminList("TEACHER COURSES", MainMenuServices.GetTeacherCoursesAsList(db)); 
                         ConsolePrintHelper.Pause(); 
                         break;
@@ -260,13 +266,10 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminSubTitle("Create new course");
 
             string? inCourseName = ConsolePrintHelper.AdminAskChoice("Enter Course Name: ");
+            if (ConsolePrintHelper.NullInputWarning(inCourseName)) return;
             string? inCourseStatus = ConsolePrintHelper.AdminAskChoice("Enter Course Status: ");
-            if (string.IsNullOrWhiteSpace(inCourseName) || string.IsNullOrWhiteSpace(inCourseStatus))
-            {
-                ConsolePrintHelper.PrintError("Input cannot be blank.");
-                ConsolePrintHelper.Pause();
-                return;
-            }
+            if (ConsolePrintHelper.NullInputWarning(inCourseStatus)) return;
+            
 
             DateOnly inCourseStartDate;
             while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Course Start Date (YYYY-MM-DD): "), out inCourseStartDate))
@@ -293,16 +296,11 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminSubTitle("Create new teacher");
 
             string? inTeacherFirstName = ConsolePrintHelper.AdminAskChoice("Enter First Name: ");
+            if (ConsolePrintHelper.NullInputWarning(inTeacherFirstName)) return;
             string? inTeacherLastName = ConsolePrintHelper.AdminAskChoice("Enter Last Name: ");
+            if (ConsolePrintHelper.NullInputWarning(inTeacherLastName)) return;
             string? inTeacherEmail = ConsolePrintHelper.AdminAskChoice("Enter Email: ");
-
-            if (string.IsNullOrWhiteSpace(inTeacherFirstName) || string.IsNullOrWhiteSpace(inTeacherLastName)
-                || string.IsNullOrWhiteSpace(inTeacherEmail))
-            {
-                ConsolePrintHelper.PrintError("Input cannot be blank.");
-                ConsolePrintHelper.Pause();
-                return;
-            }
+            if (ConsolePrintHelper.NullInputWarning(inTeacherEmail)) return;
 
             MainMenuServices.CreateTeacher(db, inTeacherFirstName, inTeacherLastName, inTeacherEmail);
 
@@ -315,12 +313,7 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminSubTitle("Create new room");
 
             string? inRoomName = ConsolePrintHelper.AdminAskChoice("Enter Room Name: ");
-            if (string.IsNullOrWhiteSpace(inRoomName))
-            {
-                ConsolePrintHelper.PrintError("Input cannot be blank.");
-                ConsolePrintHelper.Pause();
-                return;
-            }
+            if (ConsolePrintHelper.NullInputWarning(inRoomName)) return;
 
             int inRoomCapacity = 0;
             while (!int.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Room Capacity: "), out inRoomCapacity))
@@ -331,12 +324,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.AdminList("Teachers", MainMenuServices.GetTeachersAsList(db));
             string? inRoomTeacherID = ConsolePrintHelper.AdminAskChoice("Assign Teacher To Room: ");
-            if (string.IsNullOrWhiteSpace(inRoomTeacherID))
-            {
-                ConsolePrintHelper.PrintError("Input cannot be blank.");
-                ConsolePrintHelper.Pause();
-                return;
-            }
+            if (ConsolePrintHelper.NullInputWarning(inRoomTeacherID)) return;
 
             MainMenuServices.CreateRoom(db, inRoomName, inRoomCapacity, int.Parse(inRoomTeacherID));
 
@@ -381,16 +369,11 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminSubTitle("Create new student");
 
             string? inStudentFirstName = ConsolePrintHelper.AdminAskChoice("Enter First Name: ");
+            if (ConsolePrintHelper.NullInputWarning(inStudentFirstName)) return;
             string? inStudentLastName = ConsolePrintHelper.AdminAskChoice("Enter Last Name: ");
+            if (ConsolePrintHelper.NullInputWarning(inStudentLastName)) return;
             string? inStudentEmail = ConsolePrintHelper.AdminAskChoice("Enter Email: ");
-
-            if (string.IsNullOrWhiteSpace(inStudentFirstName) || string.IsNullOrWhiteSpace(inStudentLastName)
-                || string.IsNullOrWhiteSpace(inStudentEmail))
-            {
-                ConsolePrintHelper.PrintError("Input cannot be blank.");
-                ConsolePrintHelper.Pause();
-                return;
-            }
+            if (ConsolePrintHelper.NullInputWarning(inStudentEmail)) return;
 
             MainMenuServices.CreateStudent(db, inStudentFirstName, inStudentLastName, inStudentEmail, DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddYears(2)), "Active");
 
@@ -404,11 +387,12 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminSubTitle("Create new schedule");
 
             string? inDate = ConsolePrintHelper.AdminAskChoice("Enter Schedule Date (YYYY-MM-DD): ");
-            ConsolePrintHelper.NullInputWarning(inDate);
+            if (ConsolePrintHelper.NullInputWarning(inDate)) return;
+                
 
             ConsolePrintHelper.AdminList("Courses", MainMenuServices.GetCoursesAsList(db));
             string? inCourseID = ConsolePrintHelper.AdminAskChoice("Enter Course ID: ");
-            ConsolePrintHelper.NullInputWarning(inCourseID);
+            if (ConsolePrintHelper.NullInputWarning(inCourseID)) return;
             bool exists = db.Courses.Any(c => c.CourseID == int.Parse(inCourseID));
             if(!exists)
             {
@@ -419,7 +403,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.AdminList("Rooms", MainMenuServices.GetRoomsAsList(db));
             string? inRoomID = ConsolePrintHelper.AdminAskChoice("Enter Room ID: ");
-            ConsolePrintHelper.NullInputWarning(inRoomID);
+            if (ConsolePrintHelper.NullInputWarning(inRoomID)) return;
             exists = db.Rooms.Any(r => r.RoomID == int.Parse(inRoomID));
             if (!exists)
             {
@@ -430,7 +414,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.AdminList("Teachers", MainMenuServices.GetTeachersAsList(db));
             string? inTeacherID = ConsolePrintHelper.AdminAskChoice("Enter Teacher ID: ");
-            ConsolePrintHelper.NullInputWarning(inTeacherID);
+            if(ConsolePrintHelper.NullInputWarning(inTeacherID)) return;
             exists = db.Teachers.Any(t => t.TeacherID == int.Parse(inTeacherID));
             if (!exists)
             {
@@ -440,10 +424,10 @@ namespace K2_EducationProgramClient.Models.UI
             }
 
             string? inStartTime = ConsolePrintHelper.AdminAskChoice("Enter Start Time (HH:MI:SS): ");
-            ConsolePrintHelper.NullInputWarning(inStartTime);
+            if(ConsolePrintHelper.NullInputWarning(inStartTime)) return;
 
             string? inEndTime = ConsolePrintHelper.AdminAskChoice("Enter End Time (HH:MI:SS): ");
-            ConsolePrintHelper.NullInputWarning(inEndTime);
+            if(ConsolePrintHelper.NullInputWarning(inEndTime)) return;
 
             MainMenuServices.CreateSchedule(db, DateOnly.Parse(inDate), int.Parse(inCourseID), int.Parse(inRoomID), DateTime.Parse($"{inDate} {inStartTime}"), DateTime.Parse($"{inDate} {inEndTime}"));
 
@@ -489,7 +473,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
 
             string? inDate = ConsolePrintHelper.AdminAskChoice("Enter Enrollment Date (YYYY-MM-DD): ");
-            ConsolePrintHelper.NullInputWarning(inDate);
+            if(ConsolePrintHelper.NullInputWarning(inDate)) return;
 
             try
             {

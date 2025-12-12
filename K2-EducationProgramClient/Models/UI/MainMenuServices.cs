@@ -279,7 +279,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (db is not null)
             {
                 var studentsNames = db.Students
-                    .Select(s => $"({s.StudentID}) {s.FirstName} {s.LastName} | {s.Email}")
+                    .Select(s => $"ID:{s.StudentID} | NAME: {s.FirstName} {s.LastName} | EMAIL: {s.Email}")
                     .ToList();
 
                 return studentsNames;
@@ -293,7 +293,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (db is not null)
             {
                 var teachers = db.Teachers
-                    .Select(t => $"({t.TeacherID}) {t.FirstName} {t.LastName} | {t.Email}")
+                    .Select(t => $"ID:{t.TeacherID} | NAME: {t.FirstName} {t.LastName} | EMAIL: {t.Email}")
                     .ToList();
 
                 return teachers;
