@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using K2_EducationProgramClient.Models;
+using K2_EducationProgramClient.ViewModels;
 
 
 namespace K2_EducationProgramClient.Data
@@ -32,6 +33,12 @@ namespace K2_EducationProgramClient.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<TeacherCourse> TeacherCourses { get; set; }
+
+        //View Models
+        public DbSet<StudentSummary> StudentSummaries { get; set; }
+        public DbSet<CoursePerformance> CoursePerformances { get; set; }
+        public DbSet<RoomUtilization> RoomUtilizations { get; set; }
+        public DbSet<FailingCourseReport> FailingCourseReports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,6 +69,27 @@ namespace K2_EducationProgramClient.Data
                 .HasOne(s => s.Room)
                 .WithMany(r => r.Schedules)
                 .HasForeignKey(s => s.FkRoomID);
+
+
+            // Mapping View Models to Database Views
+
+            // StudentSummary View
+            modelBuilder.Entity<StudentSummary>().
+                ToView("StudentSummaryView")
+                .HasNoKey();
+            // CoursePerformance View
+            modelBuilder.Entity<CoursePerformance>()
+                .ToView("CoursePerformanceView")
+                .HasNoKey();
+            // RoomUtilization View
+            modelBuilder.Entity<RoomUtilization>()
+                .ToView("RoomUtilizationView")
+                .HasNoKey();
+            // FailingCourseReport View
+            modelBuilder.Entity<FailingCourseReport>()
+                .ToView("FailingCourseReportView")
+                .HasNoKey();
+
         }
     }
 }     
