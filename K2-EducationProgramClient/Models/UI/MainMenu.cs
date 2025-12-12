@@ -330,8 +330,10 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminList("TEACHERS", MainMenuServices.GetTeachersAsList(db));
             string? inRoomTeacherID = ConsolePrintHelper.AdminAskChoice("Assign Teacher To Room using [ID]: ");
             if (ConsolePrintHelper.NullInputWarning(inRoomTeacherID)) return;
+            if(!int.TryParse(inRoomTeacherID, out int validTeacherID))
+                Console.WriteLine(" Invalid input. Please enter a valid integer.");
 
-            MainMenuServices.CreateRoom(db, inRoomName, inRoomCapacity, int.Parse(inRoomTeacherID));
+            MainMenuServices.CreateRoom(db, inRoomName, inRoomCapacity, validTeacherID);
 
             ConsolePrintHelper.Pause();
         }
@@ -498,7 +500,8 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.AdminList("STUDENTS", MainMenuServices.GetStudentsAsList(db));
             string? studentID = ConsolePrintHelper.AdminAskChoice("Enter Student ID:");
-            bool exists = db.Students.Any(s => s.StudentID == int.Parse(studentID));
+            int.TryParse(studentID, out int validStudentID);
+            bool exists = db.Students.Any(s => s.StudentID == validStudentID);
             if (!exists)
             {
                 ConsolePrintHelper.PrintError($"Student with ID ({studentID}) not found.");
@@ -508,7 +511,8 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.AdminList("COURSES", MainMenuServices.GetCoursesAsList(db));
             string? courseID = ConsolePrintHelper.AdminAskChoice("Enter Course ID:");
-            exists = db.Courses.Any(c => c.CourseID == int.Parse(courseID));
+            int.TryParse(courseID, out int validCourseID);
+            exists = db.Courses.Any(c => c.CourseID == validCourseID);
             if (!exists)
             {
                 ConsolePrintHelper.PrintError($"Course with ID ({courseID}) not found.");
@@ -588,7 +592,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             string? inEndDate = ConsolePrintHelper.AdminAskChoice("End Date (YYYY-MM-DD):");
             if (ConsolePrintHelper.NullInputWarning(inEndDate)) return;
-            if (!DateOnly.TryParse(inStartDate, out DateOnly validEndDate))
+            if (!DateOnly.TryParse(inEndDate, out DateOnly validEndDate))
             {
                 Console.WriteLine(" Invalid date format. Please use YYYY-MM-DD.");
                 ConsolePrintHelper.Pause();
