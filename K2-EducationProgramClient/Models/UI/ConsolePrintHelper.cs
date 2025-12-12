@@ -174,7 +174,7 @@ namespace K2_EducationProgramClient.Models.UI
         public static void AdminSubTitle(string title)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            string subtitle = $"▶ {title} ◀";
+            string subtitle = $"{title}";
             Console.WriteLine(subtitle + "\n");
             Console.ResetColor();
         }

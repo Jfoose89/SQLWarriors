@@ -23,7 +23,7 @@ namespace K2_EducationProgramClient.Models.UI
                 ActiveTo = inCourseEndDate
             };
 
-            if (db is not null)
+            if (db != null)
             {
                 db.Courses.Add(course);
                 db.SaveChanges();
@@ -40,7 +40,7 @@ namespace K2_EducationProgramClient.Models.UI
                 EnrollmentDate = inEnrollmentDate
             };
 
-            if (db is not null)
+            if (db != null)
             {
                 db.Enrollments.Add(enrollment);
                 db.SaveChanges();
@@ -58,7 +58,7 @@ namespace K2_EducationProgramClient.Models.UI
                 GradeValue = inGradeValue
             };
 
-            if (db is not null)
+            if (db != null)
             {
                 db.Grades.Add(grade);
                 db.SaveChanges();
@@ -75,7 +75,7 @@ namespace K2_EducationProgramClient.Models.UI
                 FkTeacherID = inTeacherID
             };
 
-            if (db is not null)
+            if (db != null)
             {
                 db.Rooms.Add(room);
                 db.SaveChanges();
@@ -95,7 +95,7 @@ namespace K2_EducationProgramClient.Models.UI
                 StudentStatus = inStatus
             };
 
-            if (db is not null)
+            if (db != null)
             {
                 db.Students.Add(student);
                 db.SaveChanges();
@@ -113,7 +113,7 @@ namespace K2_EducationProgramClient.Models.UI
                 EndTime = inEndDateTime
             };
 
-            if (db is not null)
+            if (db != null)
             {
                 db.Schedules.Add(schedule);
                 db.SaveChanges();
@@ -129,7 +129,7 @@ namespace K2_EducationProgramClient.Models.UI
                 Email = inTeacherEmail
             };
 
-            if (db is not null)
+            if (db != null)
             {
                 db.Teachers.Add(teacher);
                 db.SaveChanges();
@@ -144,7 +144,7 @@ namespace K2_EducationProgramClient.Models.UI
                 FkCourseID = inCourseID
             };
 
-            if (db is not null)
+            if (db != null)
             {
                 db.TeacherCourses.Add(teacherCourse);
                 db.SaveChanges();
@@ -161,7 +161,7 @@ namespace K2_EducationProgramClient.Models.UI
                 return;
             }
 
-            if (db is not null)
+            if (db != null)
             {
                 var student = db.Students.FirstOrDefault(s => s.Email == studentEmail);
                 DeleteStudent(db, student);
@@ -170,7 +170,7 @@ namespace K2_EducationProgramClient.Models.UI
 
         internal static void DeleteStudent(EducationProgramClientDbContext? db, Student studentToRemove)
         {
-            if (db is not null)
+            if (db != null)
             {
                 Console.WriteLine($"Student removed: '{studentToRemove.FirstName} {studentToRemove.LastName}' | {studentToRemove.Email}");
                 db.Students.Remove(studentToRemove);
@@ -187,14 +187,14 @@ namespace K2_EducationProgramClient.Models.UI
                 return;
             }
 
-            if (db is not null)
+            if (db != null)
             {
                 var foundStudent = db.Students
                                     .Where(s => s.FirstName == inStudentName || s.LastName == inStudentName)
-                                    .Select(s => $"({s.StudentID}) {s.FirstName} {s.LastName} | {s.Email}")
+                                    .Select(s => $"ID:{s.StudentID} | {s.FirstName} {s.LastName} | {s.Email}")
                                     .ToList();
 
-                ConsolePrintHelper.AdminMenu("-", foundStudent);
+                ConsolePrintHelper.AdminList("", foundStudent);
             }
         }
 
@@ -210,9 +210,9 @@ namespace K2_EducationProgramClient.Models.UI
             CreateEnrollment(db, inCourseID, inStudentID, inEnrollmentDate);
         }
 
-        internal static List<String?> GetCoursesAsList(EducationProgramClientDbContext? db)
+        internal static List<string>? GetCoursesAsList(EducationProgramClientDbContext? db)
         {
-            if (db is not null)
+            if (db != null)
             {
                 var courseData = db.Courses
                     .Select(c => $"({c.CourseID}) '{c.CourseName}' | {c.ActiveFrom}-{c.ActiveTo} | {c.CourseStatus}")
@@ -224,9 +224,9 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
-        internal static List<string> GetEnrollmentsAsList(EducationProgramClientDbContext? db)
+        internal static List<string>? GetEnrollmentsAsList(EducationProgramClientDbContext? db)
         {
-            if (db is not null)
+            if (db != null)
             {
                 var enrollments = db.Enrollments.Select(e => $"({e.Student.StudentID}) {e.Student.FirstName} {e.Student.LastName} | {e.Course.CourseName} | {e.EnrollmentDate}").ToList();
 
@@ -236,9 +236,9 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
-        internal static List<string> GetGradesAsList(EducationProgramClientDbContext? db)
+        internal static List<string>? GetGradesAsList(EducationProgramClientDbContext? db)
         {
-            if (db is not null)
+            if (db != null)
             {
                 var grades = db.Grades.Select(g => $"({g.GradeID}) {g.Enrollment.Student.FirstName} {g.Enrollment.Student.LastName} - [ {g.GradeValue}:{g.Enrollment.Course.CourseName} | {g.Teacher.FirstName} {g.Teacher.LastName}]").ToList();
 
@@ -248,9 +248,9 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
-        internal static List<string> GetRoomsAsList(EducationProgramClientDbContext? db)
+        internal static List<string>? GetRoomsAsList(EducationProgramClientDbContext? db)
         {
-            if (db is not null)
+            if (db != null)
             {
                 var rooms = db.Rooms
                     .Select(r => $"NR:{r.RoomID} - {r.RoomName} | Max Pers: {r.Capacity} | {r.Teacher.FirstName} {r.Teacher.LastName}")
@@ -262,9 +262,9 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
-        internal static List<string> GetSchedulesAsList(EducationProgramClientDbContext? db)
+        internal static List<string>? GetSchedulesAsList(EducationProgramClientDbContext? db)
         {
-            if (db is not null)
+            if (db != null)
             {
                 var schedules = db.Schedules.Select(s => $"{s.Date}|[{s.StartTime.TimeOfDay}] - [{s.EndTime.TimeOfDay}] | ({s.FkRoomID}) {s.Room.RoomName} | {s.TeacherCourse.Course.CourseName} - {s.TeacherCourse.Teacher.FirstName} {s.TeacherCourse.Teacher.LastName}").ToList();
 
@@ -274,9 +274,9 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
-        internal static List<string> GetStudentsAsList(EducationProgramClientDbContext? db)
+        internal static List<string>? GetStudentsAsList(EducationProgramClientDbContext? db)
         {
-            if (db is not null)
+            if (db != null)
             {
                 var studentsNames = db.Students
                     .Select(s => $"ID:{s.StudentID} | NAME: {s.FirstName} {s.LastName} | EMAIL: {s.Email}")
@@ -288,9 +288,9 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
-        internal static List<string> GetTeachersAsList(EducationProgramClientDbContext? db)
+        internal static List<string>? GetTeachersAsList(EducationProgramClientDbContext? db)
         {
-            if (db is not null)
+            if (db != null)
             {
                 var teachers = db.Teachers
                     .Select(t => $"ID:{t.TeacherID} | NAME: {t.FirstName} {t.LastName} | EMAIL: {t.Email}")
@@ -302,15 +302,135 @@ namespace K2_EducationProgramClient.Models.UI
             return null;
         }
 
-        internal static List<string> GetTeacherCoursesAsList(EducationProgramClientDbContext? db)
+        internal static List<string>? GetTeacherCoursesAsList(EducationProgramClientDbContext? db)
         {
-            if (db is not null)
+            if (db != null)
             {
                 var teacherCourses = db.TeacherCourses
+                    .OrderBy(t => t.Course.CourseName)
                     .Select(t => $"{t.Course.CourseName} - {t.Teacher.FirstName} {t.Teacher.LastName}")
                     .ToList();
 
                 return teacherCourses;
+            }
+
+            return null;
+        }
+
+        internal static List<string>? GetActiveCoursesWithRegisteredStudentsList(EducationProgramClientDbContext? db)
+        {
+            if (db != null)
+            {
+                var activeCourseWithStudents = db.Enrollments
+                    .Where(e => e.Course.CourseStatus == "Active")
+                    .OrderBy(e => e.Course.CourseName)
+                    .ThenBy(e => e.Student.LastName)
+                    .Select(e => $"{e.Course.CourseName} - {e.Student.FirstName} {e.Student.LastName} | {e.Student.Email}")
+                    .ToList();
+
+                return activeCourseWithStudents;
+            }
+
+            return null;
+        }
+        internal static List<string>? GetStudentCourseGradeTeacherList(EducationProgramClientDbContext? db)
+        {
+            if (db != null)
+            {
+                var list = db.Grades
+                    .Select(g => new
+                    {
+                        StudentName = g.Enrollment.Student.FirstName + " " + g.Enrollment.Student.LastName,
+                        CourseName = g.Enrollment.Course.CourseName,
+                        Grade = g.GradeValue,
+                        GradeDate = g.GradeDate,
+                        TeacherName = g.Teacher.FirstName + " " + g.Teacher.LastName
+                    })
+                    .ToList()
+                    .Select(x => $"{x.StudentName} | {x.CourseName} | Grade: {x.Grade} | Date: {x.GradeDate} | Teacher: {x.TeacherName}")
+                    .ToList();
+
+                return list;
+            }
+
+            return null;
+        }
+        internal static List<Grade>? GetApprovedStudentsByTermList(EducationProgramClientDbContext? db, DateOnly startDate, DateOnly endDate)
+        {
+            if (db != null)
+            {
+                var obj = db.Grades
+                    .Where(g => g.GradeValue != "F" && g.GradeDate >= startDate && g.GradeDate <= endDate)
+                    .ToList();
+
+                return obj;
+            }
+
+            return null;
+        }
+
+        internal static List<Grade>? GetNotApprovedStudentsByTermList(EducationProgramClientDbContext? db, DateOnly startDate, DateOnly endDate)
+        {
+            if (db != null)
+            {
+                var obj = db.Grades
+                    .Where(g => g.GradeValue == "F" && g.GradeDate >= startDate && g.GradeDate <= endDate)
+                    .ToList();
+
+                return obj;
+            }
+
+            return null;
+        }
+
+        internal static List<string>? GetStudentApprovalReportByTermList(EducationProgramClientDbContext? db, DateOnly startDate, DateOnly endDate)
+        {
+            if (db != null)
+            {
+                var allStudents  = db.Grades
+                        .Where(g => g.GradeDate >= startDate && g.GradeDate <= endDate)
+                        .ToList();
+
+                var approvedStudents = allStudents
+                        .Where(g => g.GradeValue != "F")
+                        .ToList();
+
+                var aStudents = allStudents
+                        .Where(g => g.GradeValue == "A")
+                        .ToList();
+
+                var bStudents = allStudents
+                        .Where(g => g.GradeValue == "B")
+                        .ToList();
+
+                var cStudents = allStudents
+                        .Where(g => g.GradeValue == "C")
+                        .ToList();
+
+                var dStudents = allStudents
+                        .Where(g => g.GradeValue == "D")
+                        .ToList();
+
+                var fStudents = allStudents
+                        .Where(g => g.GradeValue == "F")
+                        .ToList();
+
+                List<string> stringListToReturn = new List<string>
+                {
+                    $"[{startDate} - {endDate}]",
+                    $"",
+                    $" Approved: {approvedStudents.Count}",
+                    $" Not Approved: {fStudents.Count}",
+                    $"",
+                    $" Total Grades:",
+                    $"   - A: {aStudents.Count}",
+                    $"   - B: {bStudents.Count}",
+                    $"   - C: {cStudents.Count}",
+                    $"   - D: {dStudents.Count}",
+                    $"   - F: {fStudents.Count}"
+                };
+
+                return stringListToReturn;
             }
 
             return null;

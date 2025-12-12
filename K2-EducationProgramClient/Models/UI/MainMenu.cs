@@ -42,7 +42,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
         }
 
-        public void CreateMenu()
+        private void CreateMenu()
         {
             bool running = true;
             while (running)
@@ -74,7 +74,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
         }
 
-        public void ViewMenu()
+        private void ViewMenu()
         {
             bool running = true;
             while (running)
@@ -85,8 +85,9 @@ namespace K2_EducationProgramClient.Models.UI
                 {
                     "SHOW ALL",
                     "Find Student",
+                    "Show Students: Course, Grade, Teacher",
                     "Show All Active Courses and Enrolled Students",
-                    "Show Student Report Per Term."
+                    "Show Student Report Per Term"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
@@ -94,15 +95,16 @@ namespace K2_EducationProgramClient.Models.UI
                 {
                     case "1": ShowAllSelect();  break;
                     case "2": FindStudent(); break;
-                    case "3": ShowActiveCoursesWithStudents(); break;
-                    case "4": ShowStudentsPerTerm(); break;
+                    case "3": ShowStudentCourseGradeTeacher(); break;
+                    case "4": ShowActiveCoursesWithStudents(); break;
+                    case "5": ShowStudentReportByTerm(); break;
                     case "0": running = false; break;
                     default: ConsolePrintHelper.FaultyMenuChoice(); break;
                 }
             }
         }
 
-        public void ShowAllSelect()
+        private void ShowAllSelect()
         {
             bool running = true;
             while (running)
@@ -175,7 +177,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
         }
 
-        public void EditMenu()
+        private void EditMenu()
         {
             bool running = true;
             while (running)
@@ -197,7 +199,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
         }
 
-        public void RemoveMenu()
+        private void RemoveMenu()
         {
             bool running = true;
             while (running)
@@ -221,7 +223,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
         }
 
-        public void ClearAndResetTableMenu()
+        private void ClearAndResetTableMenu()
         {
             bool running = true;
             while (running)
@@ -240,7 +242,7 @@ namespace K2_EducationProgramClient.Models.UI
                     "Tearcher Courses"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
-                if (db is not null)
+                if (db != null)
                 {
                     switch (choice)
                     {
@@ -259,7 +261,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
         }
 
-        public void CreateCourse()
+        private void CreateCourse()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -274,22 +276,24 @@ namespace K2_EducationProgramClient.Models.UI
             DateOnly inCourseStartDate;
             while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Course Start Date (YYYY-MM-DD): "), out inCourseStartDate))
             {
-                Console.WriteLine("Invalid input. Please enter a valid date.");
-                Console.Write("Enter a date (yyyy-MM-dd): ");
+                Console.WriteLine(" Invalid input. Please enter a valid date.");
+                ConsolePrintHelper.Pause();
+                return;
             }
             
             DateOnly inCourseEndDate;
             while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("(Optional)\nEnter Course End Date (YYYY-MM-DD): "), out inCourseEndDate))
             {
-                Console.WriteLine("Invalid input. Please enter a valid date.");
-                Console.Write("Enter a date (yyyy-MM-dd): ");
+                Console.WriteLine(" Invalid input. Please enter a valid date.");
+                ConsolePrintHelper.Pause();
+                return;
             }
 
             MainMenuServices.CreateCourse(db, inCourseName, inCourseStatus, inCourseStartDate, inCourseEndDate);
 
             ConsolePrintHelper.Pause();
         }
-        public void CreateTeacher()
+        private void CreateTeacher()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -306,7 +310,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void CreateRoom()
+        private void CreateRoom()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -318,8 +322,8 @@ namespace K2_EducationProgramClient.Models.UI
             int inRoomCapacity = 0;
             while (!int.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Room Capacity: "), out inRoomCapacity))
             {
-                Console.WriteLine("Invalid input. Please enter a valid integer.");
-                Console.Write("Enter a number: ");
+                Console.WriteLine(" Invalid input. Please enter a valid integer.");
+                Console.Write(" Enter a number: ");
             }
 
             ConsolePrintHelper.AdminList("Teachers", MainMenuServices.GetTeachersAsList(db));
@@ -330,7 +334,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void CreateEnrollment()
+        private void CreateEnrollment()
         {
             //Console.Clear();
             //ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -347,7 +351,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void FindStudent()
+        private void FindStudent()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -362,7 +366,7 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-        public void CreateStudent()
+        private void CreateStudent()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -380,7 +384,7 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.Pause();
         }
 
-        public void CreateSchedule()
+        private void CreateSchedule()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -388,7 +392,12 @@ namespace K2_EducationProgramClient.Models.UI
 
             string? inDate = ConsolePrintHelper.AdminAskChoice("Enter Schedule Date (YYYY-MM-DD): ");
             if (ConsolePrintHelper.NullInputWarning(inDate)) return;
-                
+            if (!DateOnly.TryParse(inDate, out DateOnly validDate))
+            {
+                Console.WriteLine(" Invalid date format. Please use YYYY-MM-DD.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
 
             ConsolePrintHelper.AdminList("Courses", MainMenuServices.GetCoursesAsList(db));
             string? inCourseID = ConsolePrintHelper.AdminAskChoice("Enter Course ID: ");
@@ -396,7 +405,7 @@ namespace K2_EducationProgramClient.Models.UI
             bool exists = db.Courses.Any(c => c.CourseID == int.Parse(inCourseID));
             if(!exists)
             {
-                ConsolePrintHelper.PrintError($"Course with ID ({inCourseID}) not found.");
+                ConsolePrintHelper.PrintError($" Course with ID ({inCourseID}) not found.");
                 ConsolePrintHelper.Pause();
                 return;
             }
@@ -425,28 +434,41 @@ namespace K2_EducationProgramClient.Models.UI
 
             string? inStartTime = ConsolePrintHelper.AdminAskChoice("Enter Start Time (HH:MI:SS): ");
             if(ConsolePrintHelper.NullInputWarning(inStartTime)) return;
+            if (!DateTime.TryParse($"{inDate} {inStartTime}", out DateTime validStarTime))
+            {
+                Console.WriteLine(" Invalid time format. Please try again.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
 
             string? inEndTime = ConsolePrintHelper.AdminAskChoice("Enter End Time (HH:MI:SS): ");
             if(ConsolePrintHelper.NullInputWarning(inEndTime)) return;
+            if (!DateTime.TryParse($"{inDate} {inEndTime}", out DateTime validEndTime))
+            {
+                Console.WriteLine(" Invalid time format. Please use YYYY-MM-DD.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
 
-            MainMenuServices.CreateSchedule(db, DateOnly.Parse(inDate), int.Parse(inCourseID), int.Parse(inRoomID), DateTime.Parse($"{inDate} {inStartTime}"), DateTime.Parse($"{inDate} {inEndTime}"));
+            MainMenuServices.CreateSchedule(db, DateOnly.Parse(inDate), int.Parse(inCourseID), int.Parse(inRoomID), validStarTime, validEndTime);
 
             ConsolePrintHelper.Pause();
         }
 
-        public void RemoveStudent()
+        private void RemoveStudent()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
             ConsolePrintHelper.AdminSubTitle("Remove student");
 
-            string? studentEmail = ConsolePrintHelper.AdminAskChoice("Enter Email:");
+            ConsolePrintHelper.AdminList("Students", MainMenuServices.GetStudentsAsList(db));
+            string? studentEmail = ConsolePrintHelper.AdminAskChoice("Enter Student Email to Remove:");
 
             MainMenuServices.DeleteStudentByEmail(db, studentEmail);
 
             ConsolePrintHelper.Pause();
         }
-        public void RegisterStudentToCourse()
+        private void RegisterStudentToCourse()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
@@ -491,25 +513,64 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
-
-        public void ShowActiveCoursesWithStudents()
+        private void ShowStudentCourseGradeTeacher()
         {
             Console.Clear();
             ConsolePrintHelper.AdminTitle("ADMIN MENU");
-            ConsolePrintHelper.AdminSubTitle("Courses list");
+            ConsolePrintHelper.AdminSubTitle("Student - Course, Grade, Teacher");
 
-            var courseList = MainMenuServices.GetCoursesAsList(db);
+            var courseList = MainMenuServices.GetStudentCourseGradeTeacherList(db);
+
+            if (courseList != null)
+                ConsolePrintHelper.AdminList("-", courseList);
+            else
+                Console.WriteLine("Courses could not be found!");
+
+            ConsolePrintHelper.Pause();
+        }
+        private void ShowActiveCoursesWithStudents()
+        {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Active Courses with Students");
+
+            var courseList = MainMenuServices.GetActiveCoursesWithRegisteredStudentsList(db);
 
             if(courseList != null)
-                ConsolePrintHelper.AdminList("-", MainMenuServices.GetCoursesAsList(db));
+                ConsolePrintHelper.AdminList("-", courseList);
             else
                 Console.WriteLine("Courses could not be found!");
 
             ConsolePrintHelper.Pause();
         }
 
-        public void ShowStudentsPerTerm()
+        public void ShowStudentReportByTerm()
         {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Students by term");
+
+            string? inStartDate = ConsolePrintHelper.AdminAskChoice("Start Date (YYYY-MM-DD):");
+            if(ConsolePrintHelper.NullInputWarning(inStartDate)) return;
+            if (!DateOnly.TryParse(inStartDate, out DateOnly validStartDate))
+            {
+                Console.WriteLine(" Invalid date format. Please use YYYY-MM-DD.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            string? inEndDate = ConsolePrintHelper.AdminAskChoice("End Date (YYYY-MM-DD):");
+            if (ConsolePrintHelper.NullInputWarning(inEndDate)) return;
+            if (!DateOnly.TryParse(inStartDate, out DateOnly validEndDate))
+            {
+                Console.WriteLine(" Invalid date format. Please use YYYY-MM-DD.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            ConsolePrintHelper.AdminList("", MainMenuServices.GetStudentApprovalReportByTermList(db, validStartDate, validEndDate));
+
+            ConsolePrintHelper.Pause();
         }
     }
 }
