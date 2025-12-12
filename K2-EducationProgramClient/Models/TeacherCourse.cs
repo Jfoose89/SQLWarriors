@@ -12,16 +12,15 @@ namespace K2_EducationProgramClient.Models
     {
         [Key]
         public int TeacherCourseID { get; set; }
-        [ForeignKey("Teacher")]
         public int FkTeacherID { get; set; }
+        public int FkCourseID { get; set; }
+
+        [ForeignKey("FkTeacherID")]        
         public Teacher Teacher { get; set; }
 
-        [ForeignKey("Course")]
-        public int FkCourseID { get; set; }
+        [ForeignKey("FkCourseID")]       
         public Course Course { get; set; }
-        
-        [ForeignKey("Schedule")]
-        public int? FkScheduleID { get; set; }
-        public Schedule? Schedule { get; set; }
+
+        public ICollection<Schedule>? Schedules { get; set; }
     }
 }
