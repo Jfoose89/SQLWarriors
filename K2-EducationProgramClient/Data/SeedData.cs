@@ -15,9 +15,9 @@ namespace K2_EducationProgramClient.Data
             if (db != null)
             {
                 // Course: Requires none
-                MainMenuServices.CreateCourse(db, "Course1", "CourseStatus1", DateOnly.Parse("0001-01-01"), DateOnly.Parse("0001-01-01"));
-                MainMenuServices.CreateCourse(db, "Course2", "CourseStatus2", DateOnly.Parse("0002-02-02"), DateOnly.Parse("0002-02-02"));
-                MainMenuServices.CreateCourse(db, "Course3", "CourseStatus3", DateOnly.Parse("0003-03-03"), DateOnly.Parse("0003-03-03"));
+                MainMenuServices.CreateCourse(db, "Course1", "Active", DateOnly.Parse("0001-01-01"), DateOnly.Parse("0001-01-01"));
+                MainMenuServices.CreateCourse(db, "Course2", "Inactive", DateOnly.Parse("0002-02-02"), DateOnly.Parse("0002-02-02"));
+                MainMenuServices.CreateCourse(db, "Course3", "Active", DateOnly.Parse("0003-03-03"), DateOnly.Parse("0003-03-03"));
 
                 // Teacher: Requires none
                 MainMenuServices.CreateTeacher(db, "TAlice", "TAlicesson", "talice@email.com");

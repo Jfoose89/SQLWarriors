@@ -191,10 +191,10 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 var foundStudent = db.Students
                                     .Where(s => s.FirstName == inStudentName || s.LastName == inStudentName)
-                                    .Select(s => $"ID:{s.StudentID} | {s.FirstName} {s.LastName} | {s.Email}")
+                                    .Select(s => $"ID: {s.StudentID} | NAME: {s.FirstName} {s.LastName} | EMAIL: {s.Email}")
                                     .ToList();
 
-                ConsolePrintHelper.AdminList("", foundStudent);
+                ConsolePrintHelper.AdminList("FOUND STUDENT", foundStudent);
             }
         }
 
@@ -215,7 +215,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (db != null)
             {
                 var courseData = db.Courses
-                    .Select(c => $"({c.CourseID}) '{c.CourseName}' | {c.ActiveFrom}-{c.ActiveTo} | {c.CourseStatus}")
+                    .Select(c => $"ID: {c.CourseID} | NAME: {c.CourseName} | ACTIVE TIME: {c.ActiveFrom.ToString("yyyy'/'MM'/'dd")} - {(c.ActiveTo.HasValue ? c.ActiveTo.Value.ToString("yyyy'/'MM'/'dd") : "N/A")} | STATUS: {c.CourseStatus}")
                     .ToList();
 
                 return courseData;
@@ -228,7 +228,7 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (db != null)
             {
-                var enrollments = db.Enrollments.Select(e => $"({e.Student.StudentID}) {e.Student.FirstName} {e.Student.LastName} | {e.Course.CourseName} | {e.EnrollmentDate}").ToList();
+                var enrollments = db.Enrollments.Select(e => $"STUDENT ID:{e.Student.StudentID} | STUDENT NAME: {e.Student.FirstName} {e.Student.LastName} | COURSE: {e.Course.CourseName} | ENROLLMENT DATE: {e.EnrollmentDate.ToString("yyyy'/'MM'/'dd")}").ToList();
 
                 return enrollments;
             }
@@ -240,7 +240,7 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (db != null)
             {
-                var grades = db.Grades.Select(g => $"({g.GradeID}) {g.Enrollment.Student.FirstName} {g.Enrollment.Student.LastName} - [ {g.GradeValue}:{g.Enrollment.Course.CourseName} | {g.Teacher.FirstName} {g.Teacher.LastName}]").ToList();
+                var grades = db.Grades.Select(g => $"ID:{g.GradeID} | STUDENT: {g.Enrollment.Student.FirstName} {g.Enrollment.Student.LastName} | GRADE: {g.GradeValue} | COURSE: {g.Enrollment.Course.CourseName} | TEACHER: {g.Teacher.FirstName} {g.Teacher.LastName}]").ToList();
 
                 return grades;
             }
@@ -253,7 +253,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (db != null)
             {
                 var rooms = db.Rooms
-                    .Select(r => $"NR:{r.RoomID} - {r.RoomName} | Max Pers: {r.Capacity} | {r.Teacher.FirstName} {r.Teacher.LastName}")
+                    .Select(r => $"ROOM ID:{r.RoomID} | ROOM NAME: {r.RoomName} | ROOM CAPACITY: {r.Capacity} | TEACHER: {r.Teacher.FirstName} {r.Teacher.LastName}")
                     .ToList();
 
                 return rooms;
@@ -266,7 +266,7 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (db != null)
             {
-                var schedules = db.Schedules.Select(s => $"{s.Date}|[{s.StartTime.TimeOfDay}] - [{s.EndTime.TimeOfDay}] | ({s.FkRoomID}) {s.Room.RoomName} | {s.TeacherCourse.Course.CourseName} - {s.TeacherCourse.Teacher.FirstName} {s.TeacherCourse.Teacher.LastName}").ToList();
+                var schedules = db.Schedules.Select(s => $" DATE:{s.Date} | TIME: [{s.StartTime.TimeOfDay}] - [{s.EndTime.TimeOfDay}] | ROOM ID: {s.FkRoomID} | ROOM NAME: {s.Room.RoomName} | COURSE:{s.TeacherCourse.Course.CourseName} | TEACHER: {s.TeacherCourse.Teacher.FirstName} {s.TeacherCourse.Teacher.LastName}").ToList();
 
                 return schedules;
             }
@@ -308,7 +308,7 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 var teacherCourses = db.TeacherCourses
                     .OrderBy(t => t.Course.CourseName)
-                    .Select(t => $"{t.Course.CourseName} - {t.Teacher.FirstName} {t.Teacher.LastName}")
+                    .Select(t => $"COURSE: {t.Course.CourseName} | TEACHER: {t.Teacher.FirstName} {t.Teacher.LastName}")
                     .ToList();
 
                 return teacherCourses;
@@ -321,14 +321,40 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (db != null)
             {
-                var activeCourseWithStudents = db.Enrollments
-                    .Where(e => e.Course.CourseStatus == "Active")
-                    .OrderBy(e => e.Course.CourseName)
-                    .ThenBy(e => e.Student.LastName)
-                    .Select(e => $"{e.Course.CourseName} - {e.Student.FirstName} {e.Student.LastName} | {e.Student.Email}")
-                    .ToList();
+                var activeCourses = db.Enrollments
+                                .Where(e => e.Course.CourseStatus == "Active")
+                                .OrderBy(e => e.Course.CourseName)
+                                .ThenBy(e => e.Student.LastName)
+                                .Select(e => new
+                                {
+                                    CourseName = e.Course.CourseName,
+                                    StudentName = e.Student.FirstName + " " + e.Student.LastName,
+                                    Email = e.Student.Email
+                                })
+                                .ToList()
+                                .GroupBy(x => x.CourseName)
+                                .ToList();
 
-                return activeCourseWithStudents;
+                var listToReturn = new List<string>();
+
+                foreach (var course in activeCourses)
+                {
+                    listToReturn.Add($"[ COURSE: {course.Key} ]");
+
+                    int maxStudent = course.Max(x => x.StudentName.Length);
+                    int maxEmail = course.Max(x => x.Email.Length);
+
+                    foreach (var s in course)
+                    {
+                        listToReturn.Add(
+                            $"  - STUDENT: {s.StudentName.PadRight(maxStudent)} | " +
+                            $"EMAIL: {s.Email.PadRight(maxEmail)}"
+                        );
+                    }
+                    listToReturn.Add("");
+                }
+
+                return listToReturn;
             }
 
             return null;
@@ -337,7 +363,7 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (db != null)
             {
-                var list = db.Grades
+                var gradesList = db.Grades
                     .Select(g => new
                     {
                         StudentName = g.Enrollment.Student.FirstName + " " + g.Enrollment.Student.LastName,
@@ -346,43 +372,28 @@ namespace K2_EducationProgramClient.Models.UI
                         GradeDate = g.GradeDate,
                         TeacherName = g.Teacher.FirstName + " " + g.Teacher.LastName
                     })
-                    .ToList()
-                    .Select(x => $"{x.StudentName} | {x.CourseName} | Grade: {x.Grade} | Date: {x.GradeDate} | Teacher: {x.TeacherName}")
                     .ToList();
 
-                return list;
+                int maxStudent = gradesList.Max(x => x.StudentName.Length);
+                int maxCourse = gradesList.Max(x => x.CourseName.Length);
+                int maxGrade = gradesList.Max(x => x.Grade.Length);
+                int maxTeacher = gradesList.Max(x => x.TeacherName.Length);
+
+                var listToReturn = gradesList
+                    .Select(x =>
+                        $" [ STUDENT: {x.StudentName.PadRight(maxStudent)} ]\n" +
+                        $"   COURSE : {x.CourseName.PadRight(maxCourse)}\n" +
+                        $"   GRADE  : {x.Grade.PadRight(maxGrade)}\n" +
+                        $"   DATE   : {x.GradeDate:yyyy/MM/dd}\n" +
+                        $"   TEACHER: {x.TeacherName.PadRight(maxTeacher)}\n"
+                    )
+                    .ToList();
+
+                return listToReturn;
             }
 
             return null;
         }
-        internal static List<Grade>? GetApprovedStudentsByTermList(EducationProgramClientDbContext? db, DateOnly startDate, DateOnly endDate)
-        {
-            if (db != null)
-            {
-                var obj = db.Grades
-                    .Where(g => g.GradeValue != "F" && g.GradeDate >= startDate && g.GradeDate <= endDate)
-                    .ToList();
-
-                return obj;
-            }
-
-            return null;
-        }
-
-        internal static List<Grade>? GetNotApprovedStudentsByTermList(EducationProgramClientDbContext? db, DateOnly startDate, DateOnly endDate)
-        {
-            if (db != null)
-            {
-                var obj = db.Grades
-                    .Where(g => g.GradeValue == "F" && g.GradeDate >= startDate && g.GradeDate <= endDate)
-                    .ToList();
-
-                return obj;
-            }
-
-            return null;
-        }
-
         internal static List<string>? GetStudentApprovalReportByTermList(EducationProgramClientDbContext? db, DateOnly startDate, DateOnly endDate)
         {
             if (db != null)
@@ -417,17 +428,18 @@ namespace K2_EducationProgramClient.Models.UI
 
                 List<string> stringListToReturn = new List<string>
                 {
-                    $"[{startDate} - {endDate}]",
-                    $"",
+                    $"[{startDate.ToString("yyyy'/'MM'/'dd")} - {endDate.ToString("yyyy'/'MM'/'dd")}]",
+                    $" --------------",
                     $" Approved: {approvedStudents.Count}",
                     $" Not Approved: {fStudents.Count}",
-                    $"",
-                    $" Total Grades:",
-                    $"   - A: {aStudents.Count}",
-                    $"   - B: {bStudents.Count}",
-                    $"   - C: {cStudents.Count}",
-                    $"   - D: {dStudents.Count}",
-                    $"   - F: {fStudents.Count}"
+                    $" --------------",
+                    $" All Grades",
+                    $" A: {aStudents.Count}",
+                    $" B: {bStudents.Count}",
+                    $" C: {cStudents.Count}",
+                    $" D: {dStudents.Count}",
+                    $" F: {fStudents.Count}",
+                    $" --------------"
                 };
 
                 return stringListToReturn;

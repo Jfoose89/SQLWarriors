@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Graph.Models.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -151,31 +152,25 @@ namespace K2_EducationProgramClient.Models.UI
 
             int width = 100;
             string border = new string('═', 100);
+
             Console.WriteLine($"╔{border}╗");
             Console.WriteLine($"║ {listName.ToUpper().PadRight(width - 1)}║");
-            Console.WriteLine($"║{border}║");
+            Console.WriteLine($"╚{border}╝");
             foreach (var listItem in listToPrint)
             {
-                string line = $"║ * {listItem}";
-                int padding = width - (line.Length - 1); // minus 1 because '║' at start counts once
-                if (padding < 0) padding = 0; // prevent negative padding if text is too long
-
-                Console.WriteLine(line + new string(' ', padding) + "║");
+                Console.WriteLine($" {listItem}");
             }
-
-            string quitLine = "║";
-            int quitPadding = width - (quitLine.Length - 1);
-            if (quitPadding < 0) quitPadding = 0;
-            Console.WriteLine(quitLine + new string(' ', quitPadding) + "║");
-
-            Console.WriteLine($"╚{border}╝");
-            //Console.ResetColor();
+            Console.WriteLine($" {border} ");
         }
         public static void AdminSubTitle(string title)
         {
+            int width = 100;
+            string border = new string('═', 100);
+
             Console.ForegroundColor = ConsoleColor.Yellow;
-            string subtitle = $"{title}";
-            Console.WriteLine(subtitle + "\n");
+            Console.WriteLine($"╔{border}╗");
+            Console.WriteLine($"║ {title.ToUpper().PadRight(width - 1)}║");
+            Console.WriteLine($"╚{border}╝");
             Console.ResetColor();
         }
 
@@ -217,22 +212,25 @@ namespace K2_EducationProgramClient.Models.UI
         {
             Console.OutputEncoding = Encoding.UTF8;
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
 
             int width = Math.Min(Console.LargestWindowWidth, 120);
             Console.WindowWidth = width;
 
             string[] banner = new[]
             {
-            "╔" + new string('═', width - 2) + "╗",
-            CenterLine("oooooooooo.        .o.       ooooo      ooo oooo    oooo            .o.       ooooooooo.   ooooooooo.   ", width),
-            CenterLine("`888'   `Y8b      .888.      `888b.     `8' `888   .8P'            .888.      `888   `Y88. `888   `Y88. ", width),
-            CenterLine(" 888     888     .8 888.      8 `88b.    8   888  d8'             .8 888.      888   .d88'  888   .d88' ", width),
-            CenterLine(" 888oooo888'    .8' `888.     8   `88b.  8   88888[              .8' `888.     888ooo88P'   888ooo88P'  ", width),
-            CenterLine(" 888    `88b   .88ooo8888.    8     `88b.8   888`88b.           .88ooo8888.    888          888         ", width),
-            CenterLine(" 888    .88P  .8'     `888.   8       `888   888  `88b.        .8'     `888.   888          888         ", width),
-            CenterLine("o888bood8P'  o88o     o8888o o8o        `8  o888o  o888o      o88o     o8888o o888o        o888o        ", width),
-            "╚" + new string('═', width - 2) + "╝"
+                "╔" + new string('═', width - 2) + "╗",
+
+                CenterLine("███████╗██████╗ ██╗   ██╗ ██████╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗     █████╗ ██████╗ ██████╗ ", width),
+                CenterLine("██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║    ██╔══██╗██╔══██╗██╔══██╗", width),
+                CenterLine("█████╗  ██║  ██║██║   ██║██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║    ███████║██████╔╝██████╔╝", width),
+                CenterLine("██╔══╝  ██║  ██║██║   ██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║    ██╔══██║██╔═══╝ ██╔═══╝ ", width),
+                CenterLine("███████╗██████╔╝╚██████╔╝╚██████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║    ██║  ██║██║     ██║     ", width),
+                CenterLine("╚══════╝╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝    ╚═╝  ╚═╝╚═╝     ╚═╝     ", width),
+
+                "╚" + new string('═', width - 2) + "╝"
             };
+
 
             foreach (string line in banner)
             {
