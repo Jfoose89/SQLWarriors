@@ -328,7 +328,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
 
             ConsolePrintHelper.AdminList("TEACHERS", MainMenuServices.GetTeachersAsList(db));
-            string? inRoomTeacherID = ConsolePrintHelper.AdminAskChoice("Assign Teacher To Room: ");
+            string? inRoomTeacherID = ConsolePrintHelper.AdminAskChoice("Assign Teacher To Room using [ID]: ");
             if (ConsolePrintHelper.NullInputWarning(inRoomTeacherID)) return;
 
             MainMenuServices.CreateRoom(db, inRoomName, inRoomCapacity, int.Parse(inRoomTeacherID));
@@ -337,18 +337,39 @@ namespace K2_EducationProgramClient.Models.UI
         }
         private void CreateEnrollment()
         {
-            //Console.Clear();
-            //ConsolePrintHelper.AdminTitle("ADMIN");
-            //ConsolePrintHelper.AdminSubTitle("Create new enrollment");
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN");
+            ConsolePrintHelper.AdminSubTitle("Create new enrollment");
 
-            //DateOnly inEnrollmentDate;
-            //while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Enrollment Start Date (YYYY-MM-DD): "), out inEnrollmentDate))
-            //{
-            //    Console.WriteLine("Invalid input. Please enter a valid date.");
-            //    Console.Write("Enter a date (yyyy-MM-dd): ");
-            //}
+            ConsolePrintHelper.AdminList("COURSES", MainMenuServices.GetCoursesAsList(db));
+            string? inCourseID = ConsolePrintHelper.AdminAskChoice("Enter Course ID: ");
+            if (ConsolePrintHelper.NullInputWarning(inCourseID)) return;
+            bool exists = db.Courses.Any(c => c.CourseID == int.Parse(inCourseID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($" Course with ID ({inCourseID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
 
-            //MainMenuServices.CreateEnrollment(db, inEnrollmentDate);
+            ConsolePrintHelper.AdminList("STUDENTS", MainMenuServices.GetStudentsAsList(db));
+            string? inStudentID = ConsolePrintHelper.AdminAskChoice("Enter Student ID:");
+            exists = db.Students.Any(s => s.StudentID == int.Parse(inStudentID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($"Student with ID ({inStudentID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            DateOnly inEnrollmentDate;
+            while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Enrollment Start Date (YYYY-MM-DD): "), out inEnrollmentDate))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid date.");
+                Console.Write("Enter a date (yyyy-MM-dd): ");
+            }
+
+            MainMenuServices.CreateEnrollment(db, int.Parse(inCourseID), int.Parse(inStudentID), inEnrollmentDate);
 
             ConsolePrintHelper.Pause();
         }
