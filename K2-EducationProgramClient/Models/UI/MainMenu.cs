@@ -84,7 +84,7 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("VIEW MENU", new List<string>
                 {
-                    "SHOW ALL SELECTION",
+                    "Select Table to View",
                     "Find Student",
                     "Show Students: Course, Grade, Teacher",
                     "Show All Active Courses and Enrolled Students",
