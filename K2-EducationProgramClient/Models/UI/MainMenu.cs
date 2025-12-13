@@ -372,7 +372,52 @@ namespace K2_EducationProgramClient.Models.UI
             }
 
             MainMenuServices.CreateEnrollment(db, int.Parse(inCourseID), int.Parse(inStudentID), inEnrollmentDate);
+            while (!int.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Student ID: "), out studentID))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
+                Console.Write("Enter student ID: ");
+            }
+            
+            int courseID;
+            while (!int.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Course ID: "), out courseID))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid integer.");
+                Console.Write("Enter course ID: ");
+            }
+            
+            // check if student and course exist 
+            var findStudent = db.Students.FirstOrDefault(s  => s.StudentID == studentID);
+            var findCourse = db.Courses.FirstOrDefault(c  => c.CourseID == courseID);
+            
+            // check if student is already enrolled in the course 
+            var existingEnrollment = db.Enrollments.FirstOrDefault(e => e.FkCourseID == courseID && e.FkStudentID == studentID);
+            if (existingEnrollment is not null)
+            {
+                Console.WriteLine("This student is already enrolled in this course.");
+                return;
+            }
 
+            // if student and course are exist create enrollment
+            if (findStudent is not null && findCourse is not null)
+            {
+                var enrollment = new Enrollment
+                {
+                    FkStudentID = studentID,
+                    EnrollmentDate = inEnrollmentDate,
+                    FkCourseID = courseID
+                };
+
+                if (db is not null)
+                {
+                    db.Enrollments.Add(enrollment);
+                    db.SaveChanges();
+                    Console.WriteLine($"Enrollment added: {inEnrollmentDate}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Student or course not found");
+            }
             ConsolePrintHelper.Pause();
         }
         private void FindStudent()
