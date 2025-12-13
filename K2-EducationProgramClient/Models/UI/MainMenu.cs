@@ -210,7 +210,7 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminMenu("REMOVE MENU", new List<string>
                 {
                     "Remove Student",
-                    "Clear and reset data table"
+                    "Select Table To Clear and Reseed"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
