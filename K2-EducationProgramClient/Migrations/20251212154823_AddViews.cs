@@ -83,7 +83,7 @@ namespace K2_EducationProgramClient.Migrations
             migrationBuilder.Sql(@"
                 CREATE VIEW RoomUtilizationView AS
                 SELECT
-                    r.RoomNumber,
+                    r.RoomName,
                     r.Capacity,
                     COUNT(sch.ScheduleID) AS TotalSchedules,
                     SUM(DATEDIFF(MINUTE, sch.StartTime, sch.EndTime)) AS TotalScheduledMinutes
@@ -91,7 +91,7 @@ namespace K2_EducationProgramClient.Migrations
                 LEFT JOIN Schedules sch ON r.RoomID = sch.FkRoomID
                 GROUP BY 
                     r.RoomID, 
-                    r.RoomNumber, 
+                    r.RoomName, 
                     r.Capacity;
             ");
         }
