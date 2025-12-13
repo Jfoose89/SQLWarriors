@@ -33,18 +33,38 @@ namespace K2_EducationProgramClient.Models.UI
 
         internal static void CreateEnrollment(EducationProgramClientDbContext? db, int inCourseID, int inStudentID, DateOnly inEnrollmentDate)
         {
-            var enrollment = new Enrollment
-            {
-                FkCourseID = inCourseID,
-                FkStudentID = inStudentID,
-                EnrollmentDate = inEnrollmentDate
-            };
+            // check if student and course exist 
+            var findStudent = db.Students.FirstOrDefault(s => s.StudentID == inStudentID);
+            var findCourse = db.Courses.FirstOrDefault(c => c.CourseID == inCourseID);
 
-            if (db != null)
+            // check if student is already enrolled in the course 
+            var existingEnrollment = db.Enrollments.FirstOrDefault(e => e.FkCourseID == inCourseID && e.FkStudentID == inStudentID);
+            if (existingEnrollment is not null)
             {
-                db.Enrollments.Add(enrollment);
-                db.SaveChanges();
-                Console.WriteLine($"Enrollment added: {inEnrollmentDate}");
+                Console.WriteLine("This student is already enrolled in this course.");
+                return;
+            }
+
+            // if student and course are exist create enrollment
+            if (findStudent is not null && findCourse is not null)
+            {
+                var enrollment = new Enrollment
+                {
+                    FkStudentID = inStudentID,
+                    EnrollmentDate = inEnrollmentDate,
+                    FkCourseID = inCourseID
+                };
+
+                if (db is not null)
+                {
+                    db.Enrollments.Add(enrollment);
+                    db.SaveChanges();
+                    Console.WriteLine($"Enrollment added: {inEnrollmentDate}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Student or course not found");
             }
         }
 
