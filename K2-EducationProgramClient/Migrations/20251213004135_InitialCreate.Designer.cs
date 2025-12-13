@@ -4,6 +4,7 @@ using K2_EducationProgramClient.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace K2_EducationProgramClient.Migrations
 {
     [DbContext(typeof(EducationProgramClientDbContext))]
-    partial class EducationProgramClientDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251213004135_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,7 +166,7 @@ namespace K2_EducationProgramClient.Migrations
 
                     b.HasKey("GradeID");
 
-                    b.HasIndex("FkEnrollmentID");
+                    b.HasIndex("EnrollmentID");
 
                     b.HasIndex("FkEnrollmentID");
 
@@ -217,16 +220,16 @@ namespace K2_EducationProgramClient.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("FkTeacherID")
-                        .HasColumnType("int");
-
                     b.Property<string>("RoomName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TeacherID")
+                        .HasColumnType("int");
+
                     b.HasKey("RoomID");
 
-                    b.HasIndex("FkTeacherID");
+                    b.HasIndex("TeacherID");
 
                     b.ToTable("Rooms");
 
@@ -259,10 +262,13 @@ namespace K2_EducationProgramClient.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("FkCourseID")
+                        .HasColumnType("int");
+
                     b.Property<int>("FkRoomID")
                         .HasColumnType("int");
 
-                    b.Property<int>("FkTeacherCourseID")
+                    b.Property<int>("FkTeacherID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartTime")
@@ -431,6 +437,8 @@ namespace K2_EducationProgramClient.Migrations
 
                     b.HasIndex("FkCourseID");
 
+                    b.HasIndex("FkScheduleID");
+
                     b.HasIndex("FkTeacherID");
 
                     b.ToTable("TeacherCourses");
@@ -496,7 +504,7 @@ namespace K2_EducationProgramClient.Migrations
                 {
                     b.HasOne("K2_EducationProgramClient.Models.Teacher", "Teacher")
                         .WithMany("Rooms")
-                        .HasForeignKey("FkTeacherID");
+                        .HasForeignKey("TeacherID");
 
                     b.Navigation("Teacher");
                 });
@@ -521,9 +529,11 @@ namespace K2_EducationProgramClient.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Course");
+
                     b.Navigation("Room");
 
-                    b.Navigation("TeacherCourse");
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("K2_EducationProgramClient.Models.TeacherCourse", b =>
@@ -547,6 +557,8 @@ namespace K2_EducationProgramClient.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+
+                    b.Navigation("Schedule");
 
                     b.Navigation("Teacher");
                 });
@@ -582,11 +594,6 @@ namespace K2_EducationProgramClient.Migrations
                     b.Navigation("Schedules");
 
                     b.Navigation("TeacherCourses");
-                });
-
-            modelBuilder.Entity("K2_EducationProgramClient.Models.TeacherCourse", b =>
-                {
-                    b.Navigation("Schedules");
                 });
 #pragma warning restore 612, 618
         }

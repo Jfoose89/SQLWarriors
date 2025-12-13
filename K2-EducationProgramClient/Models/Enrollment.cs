@@ -15,10 +15,12 @@ namespace K2_EducationProgramClient.Models
         public int FkStudentID { get; set; }
         public int FkCourseID { get; set; }
 
-        [ForeignKey("FkStudentID")]        
+        [ForeignKey(nameof(Student))]
+        public int FkStudentID { get; set; }
         public Student Student { get; set; }
 
-        [ForeignKey("FkCourseID")]        
+        [ForeignKey(nameof(Course))]
+        public int FkCourseID { get; set; }
         public Course Course { get; set; }
 
         public DateOnly EnrollmentDate { get; set; }
