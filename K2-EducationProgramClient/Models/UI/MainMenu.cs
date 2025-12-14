@@ -92,7 +92,8 @@ namespace K2_EducationProgramClient.Models.UI
                     "Find Student",
                     "Show Students: Course, Grade, Teacher",
                     "Show All Active Courses and Enrolled Students",
-                    "Show Student Report Per Term"
+                    "Show Student Report Per Term",
+                    "Show Course Performance"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
@@ -103,6 +104,7 @@ namespace K2_EducationProgramClient.Models.UI
                     case "3": ShowStudentCourseGradeTeacher(); break;
                     case "4": ShowActiveCoursesWithStudents(); break;
                     case "5": ShowStudentReportByTerm(); break;
+                    case "6": ShowCoursePerformance(); break;
                     case "0": running = false; break;
                     default: ConsolePrintHelper.FaultyMenuChoice(); break;
                 }
@@ -680,6 +682,16 @@ namespace K2_EducationProgramClient.Models.UI
             }
 
             ConsolePrintHelper.AdminList("REPORT", MainMenuServices.GetStudentApprovalReportByTermList(db, validStartDate, validEndDate));
+
+            ConsolePrintHelper.Pause();
+        }
+        private void ShowCoursePerformance()
+        {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN");
+            ConsolePrintHelper.AdminSubTitle("COURSE PERFORMANCE");
+
+            ConsolePrintHelper.AdminList("", MainMenuServices.GetCoursePerformanceAsList(db));
 
             ConsolePrintHelper.Pause();
         }

@@ -10,8 +10,8 @@ namespace K2_EducationProgramClient.ViewModels
     {
         public string CourseName { get; set; }
         public int TotalEnrollments { get; set; }
-        public int TotalSchedules { get; set; }
+        //public int TotalSchedules { get; set; }
         public decimal AverageCourseGrade { get; set; }
-        public int FailingStudentsCount { get; set; }
+        //public int FailingStudentsCount { get; set; }
     }
 }

@@ -427,6 +427,7 @@ namespace K2_EducationProgramClient.Models.UI
         }
         internal static List<string>? GetStudentApprovalReportByTermList(EducationProgramClientDbContext? db, DateOnly startDate, DateOnly endDate)
         {
+            
             if (db != null)
             {
                 var allStudents  = db.Grades
@@ -472,6 +473,34 @@ namespace K2_EducationProgramClient.Models.UI
                     $"  F: {fStudents.Count}",
                     $"  --------------"
                 };
+
+                return stringListToReturn;
+            }
+
+            return null;
+        }
+
+        internal static List<string>? GetCoursePerformanceAsList(EducationProgramClientDbContext? db)
+        {
+            if (db != null)
+            {
+                var coursePerformance = db.CoursePerformances;
+
+
+                List<string> stringListToReturn = new List<string>();
+
+                foreach (var c in coursePerformance)
+                {
+                    // NOTE: Keep this formatting, weird in code but good in console.
+                    stringListToReturn.Add(
+                                    $@" [ {c.CourseName} ]
+   - Total Enrollments: {c.TotalEnrollments}
+   - Average Grade: {c.AverageCourseGrade.ToString("0.0")}
+"
+                
+    );
+                }
+                
 
                 return stringListToReturn;
             }
