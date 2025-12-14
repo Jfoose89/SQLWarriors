@@ -50,25 +50,29 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 Console.Clear();
                 ConsolePrintHelper.AdminTitle("ADMIN");
-                ConsolePrintHelper.AdminMenu("ADD MENU", new List<string>
+                ConsolePrintHelper.AdminMenu("CREATE MENU", new List<string>
                 {
-                    "New Course",
-                    "New Teacher",
-                    "New Room",
-                    "New Enrollment",
-                    "New Student",
-                    "New Schedule",
+                    "Create Course",
+                    "Create Enrollment",
+                    "Create Grade",
+                    "Create Room",
+                    "Create Schedule",
+                    "Create Student",
+                    "Create Teacher",
+                    "Create Teacher Course"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
                 switch (choice)
                 {
                     case "1": CreateCourse(); break;
-                    case "2": CreateTeacher(); break;
-                    case "3": CreateRoom(); break;
-                    case "4": CreateEnrollment(); break;
-                    case "5": CreateStudent(); break;
-                    case "6": CreateSchedule(); break;
+                    case "2": CreateEnrollment(); break;
+                    case "3": CreateGrade(); break;
+                    case "4": CreateRoom();  break;
+                    case "5": CreateSchedule();  break;
+                    case "6": CreateStudent();  break;
+                    case "7": CreateTeacher(); break;
+                    case "8": CreateTeacherCourse(); break;
                     case "0": running = false; break;
                     default: ConsolePrintHelper.FaultyMenuChoice(); break;
                 }
@@ -114,14 +118,14 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("SHOW ALL MENU", new List<string>
                 {
-                    "Courses",
-                    "Enrollments",
-                    "Grades",
-                    "Rooms",
-                    "Schedules",
-                    "Students",
-                    "Teachers",
-                    "Teacher Courses"
+                    "View Courses",
+                    "View Enrollments",
+                    "View Grades",
+                    "View Rooms",
+                    "View Schedules",
+                    "View Students",
+                    "View Teachers",
+                    "View Teacher Courses"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
@@ -233,14 +237,14 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.AdminTitle("ADMIN");
                 ConsolePrintHelper.AdminMenu("CLEAR & RESET MENU", new List<string>
                 {
-                    "Courses",
-                    "Enrollments",
-                    "Grades",
-                    "Rooms",
-                    "Schedules",
-                    "Students",
-                    "Teachers",
-                    "Tearcher Courses"
+                    "Clear Courses",
+                    "Clear Enrollments",
+                    "Clear Grades",
+                    "Clear Rooms",
+                    "Clear Schedules",
+                    "Clear Students",
+                    "Clear Teachers",
+                    "Clear Tearcher Courses"
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
                 if (db != null)
@@ -311,6 +315,40 @@ namespace K2_EducationProgramClient.Models.UI
 
             ConsolePrintHelper.Pause();
         }
+
+        private void CreateTeacherCourse()
+        {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN");
+            ConsolePrintHelper.AdminSubTitle("Create new course");
+            ConsolePrintHelper.AdminList("TEACHERS", MainMenuServices.GetTeachersAsList(db));
+            string? inTeacherID = ConsolePrintHelper.AdminAskChoice("Enter Teacher ID:");
+            bool exists = db.Teachers.Any(t => t.TeacherID == int.Parse(inTeacherID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($"Teacher with ID ({inTeacherID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+            if (!int.TryParse(inTeacherID, out int validTeacherID))
+                Console.WriteLine(" Invalid input. Please enter a valid integer.");
+
+            ConsolePrintHelper.AdminList("COURSES", MainMenuServices.GetCoursesAsList(db));
+            string? inCourseID = ConsolePrintHelper.AdminAskChoice("Enter Course ID:");
+            exists = db.Courses.Any(c => c.CourseID == int.Parse(inCourseID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($"Course with ID ({inCourseID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+            if (!int.TryParse(inCourseID, out int validCourseID))
+                Console.WriteLine(" Invalid input. Please enter a valid integer.");
+
+            MainMenuServices.CreateTeacherCourse(db, validTeacherID, validCourseID);
+
+            ConsolePrintHelper.Pause();
+        }
         private void CreateRoom()
         {
             Console.Clear();
@@ -373,6 +411,48 @@ namespace K2_EducationProgramClient.Models.UI
 
             MainMenuServices.CreateEnrollment(db, int.Parse(inCourseID), int.Parse(inStudentID), inEnrollmentDate);
             
+            ConsolePrintHelper.Pause();
+        }
+
+        private void CreateGrade()
+        {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN");
+            ConsolePrintHelper.AdminSubTitle("Create new grade");
+
+            ConsolePrintHelper.AdminList("ENROLLMENTS", MainMenuServices.GetEnrollmentsAsList(db));
+            string? inEnrollmentID = ConsolePrintHelper.AdminAskChoice("Enter Enrollment ID: ");
+            if (ConsolePrintHelper.NullInputWarning(inEnrollmentID)) return;
+            bool exists = db.Enrollments.Any(e => e.EnrollmentID == int.Parse(inEnrollmentID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($" Enrollment with ID ({inEnrollmentID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            string? inGradeValue = ConsolePrintHelper.AdminAskChoice("Enter Grade Value (A,B,C,D,F): ");
+            if (ConsolePrintHelper.NullInputWarning(inGradeValue)) return;
+
+            ConsolePrintHelper.AdminList("TEACHERS", MainMenuServices.GetTeachersAsList(db));
+            string? inTeacherID = ConsolePrintHelper.AdminAskChoice("Enter Teacher ID:");
+            exists = db.Teachers.Any(t => t.TeacherID == int.Parse(inTeacherID));
+            if (!exists)
+            {
+                ConsolePrintHelper.PrintError($"Teacher with ID ({inTeacherID}) not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+
+            DateOnly inGradeDate;
+            while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Grading Date (YYYY-MM-DD): "), out inGradeDate))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid date.");
+                Console.Write("Enter a date (yyyy-MM-dd): ");
+            }
+
+            MainMenuServices.CreateGrade(db, int.Parse(inEnrollmentID), int.Parse(inTeacherID), inGradeDate, inGradeValue);
+
             ConsolePrintHelper.Pause();
         }
         private void FindStudent()
@@ -440,7 +520,7 @@ namespace K2_EducationProgramClient.Models.UI
             exists = db.Rooms.Any(r => r.RoomID == int.Parse(inRoomID));
             if (!exists)
             {
-                ConsolePrintHelper.PrintError($"Room with ID ({inRoomID}) not found.");
+                ConsolePrintHelper.PrintError($" Room with ID ({inRoomID}) not found.");
                 ConsolePrintHelper.Pause();
                 return;
             }
@@ -451,7 +531,7 @@ namespace K2_EducationProgramClient.Models.UI
             exists = db.Teachers.Any(t => t.TeacherID == int.Parse(inTeacherID));
             if (!exists)
             {
-                ConsolePrintHelper.PrintError($"Teacher with ID ({inTeacherID}) not found.");
+                ConsolePrintHelper.PrintError($" Teacher with ID ({inTeacherID}) not found.");
                 ConsolePrintHelper.Pause();
                 return;
             }
@@ -504,7 +584,7 @@ namespace K2_EducationProgramClient.Models.UI
             bool exists = db.Students.Any(s => s.StudentID == validStudentID);
             if (!exists)
             {
-                ConsolePrintHelper.PrintError($"Student with ID ({studentID}) not found.");
+                ConsolePrintHelper.PrintError($" Student with ID ({studentID}) not found.");
                 ConsolePrintHelper.Pause();
                 return;
             }
@@ -515,7 +595,7 @@ namespace K2_EducationProgramClient.Models.UI
             exists = db.Courses.Any(c => c.CourseID == validCourseID);
             if (!exists)
             {
-                ConsolePrintHelper.PrintError($"Course with ID ({courseID}) not found.");
+                ConsolePrintHelper.PrintError($" Course with ID ({courseID}) not found.");
                 ConsolePrintHelper.Pause();
                 return;
             }
@@ -530,11 +610,11 @@ namespace K2_EducationProgramClient.Models.UI
             }
             catch (DuplicateNameException ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($" Error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Unexpected error: {ex.Message}");
+                Console.WriteLine($" Unexpected error: {ex.Message}");
             }
 
             ConsolePrintHelper.Pause();
@@ -553,7 +633,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
             else
             {
-                Console.WriteLine("Courses could not be found!");
+                Console.WriteLine(" Courses could not be found!");
             }
                 
 
@@ -570,7 +650,7 @@ namespace K2_EducationProgramClient.Models.UI
             if(courseList != null)
                 ConsolePrintHelper.AdminList("COURSES", courseList);
             else
-                Console.WriteLine("Courses could not be found!");
+                Console.WriteLine(" Courses could not be found!");
 
             ConsolePrintHelper.Pause();
         }

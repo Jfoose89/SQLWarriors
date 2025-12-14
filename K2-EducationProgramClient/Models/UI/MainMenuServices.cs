@@ -27,7 +27,7 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 db.Courses.Add(course);
                 db.SaveChanges();
-                Console.WriteLine($"Course added: '{inCourseName}' | {inCourseStartDate}-{inCourseEndDate} | {inCourseStatus}");
+                Console.WriteLine($" Course added: '{inCourseName}' | {inCourseStartDate}-{inCourseEndDate} | {inCourseStatus}");
             }
         }
 
@@ -41,7 +41,7 @@ namespace K2_EducationProgramClient.Models.UI
             var existingEnrollment = db.Enrollments.FirstOrDefault(e => e.FkCourseID == inCourseID && e.FkStudentID == inStudentID);
             if (existingEnrollment is not null)
             {
-                Console.WriteLine("This student is already enrolled in this course.");
+                Console.WriteLine(" This student is already enrolled in this course.");
                 return;
             }
 
@@ -59,12 +59,15 @@ namespace K2_EducationProgramClient.Models.UI
                 {
                     db.Enrollments.Add(enrollment);
                     db.SaveChanges();
-                    Console.WriteLine($"Enrollment added: {inEnrollmentDate}");
+
+                    var course = db.Courses.FirstOrDefault(c => c.CourseID == inCourseID);
+                    var student = db.Students.FirstOrDefault(s => s.StudentID == inStudentID);
+                    Console.WriteLine($" Enrollment added: [{student.FirstName} {student.LastName} - {course.CourseName}]");
                 }
             }
             else
             {
-                Console.WriteLine($"Student or course not found");
+                Console.WriteLine($" Student or course not found");
             }
         }
 
@@ -82,7 +85,10 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 db.Grades.Add(grade);
                 db.SaveChanges();
-                Console.WriteLine($"Enrollment added: ({grade.GradeID})");
+
+                var enrollment = db.Enrollments.FirstOrDefault(e => e.EnrollmentID == inEnrollmentID);
+                var teacher = db.Teachers.FirstOrDefault(t => t.TeacherID == inTeacherID);
+                Console.WriteLine($" Grade added: [{enrollment.Course.CourseName} | {enrollment.Student.FirstName} {enrollment.Student.LastName} | {inGradeValue} | {inGradeDate.ToString("yyyy'/'MM'/'dd")} | {teacher.FirstName} {teacher.LastName}]");
             }
         }
 
@@ -99,7 +105,7 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 db.Rooms.Add(room);
                 db.SaveChanges();
-                Console.WriteLine($"Teacher added: '{inRoomName}' | {inRoomCapacity}");
+                Console.WriteLine($" Teacher added: '{inRoomName}' | {inRoomCapacity}");
             }
         }
 
@@ -119,7 +125,7 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 db.Students.Add(student);
                 db.SaveChanges();
-                Console.WriteLine($"Student added: '{inStudentFirstName} {inStudentLastName}' | {inStudentEmail} | {DateOnly.FromDateTime(DateTime.Today)} | {DateOnly.FromDateTime(DateTime.Today.AddYears(2))} | 'Active'");
+                Console.WriteLine($" Student added: '{inStudentFirstName} {inStudentLastName}' | {inStudentEmail} | {DateOnly.FromDateTime(DateTime.Today)} | {DateOnly.FromDateTime(DateTime.Today.AddYears(2))} | 'Active'");
             }
         }
         internal static void CreateSchedule(EducationProgramClientDbContext? db, DateOnly inDate, int inCourseID, int inRoomID, DateTime inStartDateTime, DateTime inEndDateTime)
@@ -137,7 +143,7 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 db.Schedules.Add(schedule);
                 db.SaveChanges();
-                Console.WriteLine($"Schedule added: {inDate} | {inStartDateTime} - {inEndDateTime} | Room: {inRoomID} | Course: {inCourseID}");
+                Console.WriteLine($" Schedule added: {inDate} | {inStartDateTime} - {inEndDateTime} | Room: {inRoomID} | Course: {inCourseID}");
             }
         }
         internal static void CreateTeacher(EducationProgramClientDbContext? db, string inTeacherFirstName, string inTeacherLastName, string inTeacherEmail)
@@ -153,7 +159,7 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 db.Teachers.Add(teacher);
                 db.SaveChanges();
-                Console.WriteLine($"Teacher added: '{inTeacherFirstName} {inTeacherLastName}' | {inTeacherEmail}");
+                Console.WriteLine($" Teacher added: '{inTeacherFirstName} {inTeacherLastName}' | {inTeacherEmail}");
             }
         }
         internal static void CreateTeacherCourse(EducationProgramClientDbContext db, int inTeacherId, int inCourseID)
@@ -168,7 +174,10 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 db.TeacherCourses.Add(teacherCourse);
                 db.SaveChanges();
-                Console.WriteLine($"Teacher course added: {inTeacherId} - {inCourseID}");
+
+                var teacher = db.Teachers.FirstOrDefault(t => t.TeacherID == inTeacherId);
+                var course = db.Courses.FirstOrDefault(c => c.CourseID == inCourseID);
+                Console.WriteLine($" Teacher Course added: [¨{teacher.FirstName} {teacher.LastName} - {course.CourseName}]");
             }
         }
 
@@ -176,7 +185,7 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (string.IsNullOrWhiteSpace(studentEmail))
             {
-                ConsolePrintHelper.PrintError("Email cannot be blank.");
+                ConsolePrintHelper.PrintError(" Email cannot be blank.");
                 ConsolePrintHelper.Pause();
                 return;
             }
@@ -192,7 +201,7 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (db != null)
             {
-                Console.WriteLine($"Student removed: '{studentToRemove.FirstName} {studentToRemove.LastName}' | {studentToRemove.Email}");
+                Console.WriteLine($" Student removed: '{studentToRemove.FirstName} {studentToRemove.LastName}' | {studentToRemove.Email}");
                 db.Students.Remove(studentToRemove);
                 db.SaveChanges();
             }
@@ -202,7 +211,7 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (string.IsNullOrWhiteSpace(inStudentName))
             {
-                ConsolePrintHelper.PrintError("Email cannot be blank.");
+                ConsolePrintHelper.PrintError(" Email cannot be blank.");
                 ConsolePrintHelper.Pause();
                 return;
             }
@@ -224,7 +233,7 @@ namespace K2_EducationProgramClient.Models.UI
             var enrollmentExists = db.Enrollments.Any(e => e.FkStudentID == inStudentID && e.FkCourseID == inCourseID);
             if (enrollmentExists)
             {
-                throw new DuplicateNameException("Student is already registered to this course.");
+                throw new DuplicateNameException(" Student is already registered to this course.");
             }
 
             CreateEnrollment(db, inCourseID, inStudentID, inEnrollmentDate);
@@ -235,7 +244,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (db != null)
             {
                 var courseData = db.Courses
-                    .Select(c => $"ID: {c.CourseID} | NAME: {c.CourseName} | ACTIVE TIME: {c.ActiveFrom.ToString("yyyy'/'MM'/'dd")} - {(c.ActiveTo.HasValue ? c.ActiveTo.Value.ToString("yyyy'/'MM'/'dd") : "N/A")} | STATUS: {c.CourseStatus}")
+                    .Select(c => $" ID: {c.CourseID} | NAME: {c.CourseName} | ACTIVE TIME: {c.ActiveFrom.ToString("yyyy'/'MM'/'dd")} - {(c.ActiveTo.HasValue ? c.ActiveTo.Value.ToString("yyyy'/'MM'/'dd") : "N/A")} | STATUS: {c.CourseStatus}")
                     .ToList();
 
                 return courseData;
@@ -248,7 +257,10 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (db != null)
             {
-                var enrollments = db.Enrollments.Select(e => $"STUDENT ID:{e.Student.StudentID} | STUDENT NAME: {e.Student.FirstName} {e.Student.LastName} | COURSE: {e.Course.CourseName} | ENROLLMENT DATE: {e.EnrollmentDate.ToString("yyyy'/'MM'/'dd")}").ToList();
+                var enrollments = db.Enrollments
+                    .OrderBy(e => e.EnrollmentID)
+                    .Select(e => $"ENROLLMENT ID:{e.EnrollmentID} | ENROLLMENT DATE:{e.EnrollmentDate.ToString("yyyy'/'MM'/'dd")} | STUDENT ID:{e.Student.StudentID} | STUDENT NAME:{e.Student.FirstName} {e.Student.LastName} | COURSE:{e.Course.CourseName}")
+                    .ToList();
 
                 return enrollments;
             }
@@ -260,7 +272,7 @@ namespace K2_EducationProgramClient.Models.UI
         {
             if (db != null)
             {
-                var grades = db.Grades.Select(g => $"ID:{g.GradeID} | STUDENT: {g.Enrollment.Student.FirstName} {g.Enrollment.Student.LastName} | GRADE: {g.GradeValue} | COURSE: {g.Enrollment.Course.CourseName} | TEACHER: {g.Teacher.FirstName} {g.Teacher.LastName}]").ToList();
+                var grades = db.Grades.Select(g => $" ID:{g.GradeID} | STUDENT: {g.Enrollment.Student.FirstName} {g.Enrollment.Student.LastName} | GRADE: {g.GradeValue} | COURSE: {g.Enrollment.Course.CourseName} | TEACHER: {g.Teacher.FirstName} {g.Teacher.LastName}]").ToList();
 
                 return grades;
             }
@@ -273,7 +285,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (db != null)
             {
                 var rooms = db.Rooms
-                    .Select(r => $"ROOM ID:{r.RoomID} | ROOM NAME: {r.RoomName} | ROOM CAPACITY: {r.Capacity} | TEACHER: {r.Teacher.FirstName} {r.Teacher.LastName}")
+                    .Select(r => $" ROOM ID:{r.RoomID} | ROOM NAME: {r.RoomName} | ROOM CAPACITY: {r.Capacity} | TEACHER: {r.Teacher.FirstName} {r.Teacher.LastName}")
                     .ToList();
 
                 return rooms;
@@ -299,7 +311,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (db != null)
             {
                 var studentsNames = db.Students
-                    .Select(s => $"ID:{s.StudentID} | NAME: {s.FirstName} {s.LastName} | EMAIL: {s.Email}")
+                    .Select(s => $" ID:{s.StudentID} | NAME: {s.FirstName} {s.LastName} | EMAIL: {s.Email}")
                     .ToList();
 
                 return studentsNames;
@@ -313,7 +325,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (db != null)
             {
                 var teachers = db.Teachers
-                    .Select(t => $"ID:{t.TeacherID} | NAME: {t.FirstName} {t.LastName} | EMAIL: {t.Email}")
+                    .Select(t => $" ID:{t.TeacherID} | NAME: {t.FirstName} {t.LastName} | EMAIL: {t.Email}")
                     .ToList();
 
                 return teachers;
@@ -328,9 +340,8 @@ namespace K2_EducationProgramClient.Models.UI
             {
                 var teacherCourses = db.TeacherCourses
                     .OrderBy(t => t.Course.CourseName)
-                    .Select(t => $"COURSE: {t.Course.CourseName} | TEACHER: {t.Teacher.FirstName} {t.Teacher.LastName}")
+                    .Select(t => $" COURSE: {t.Course.CourseName} | TEACHER: {t.Teacher.FirstName} {t.Teacher.LastName}")
                     .ToList();
-
                 return teacherCourses;
             }
 
@@ -367,8 +378,8 @@ namespace K2_EducationProgramClient.Models.UI
                     foreach (var s in course)
                     {
                         listToReturn.Add(
-                            $"  - STUDENT: {s.StudentName.PadRight(maxStudent)} | " +
-                            $"EMAIL: {s.Email.PadRight(maxEmail)}"
+                            $"   - STUDENT: {s.StudentName.PadRight(maxStudent)} | " +
+                            $" EMAIL: {s.Email.PadRight(maxEmail)}"
                         );
                     }
                     listToReturn.Add("");
@@ -448,18 +459,18 @@ namespace K2_EducationProgramClient.Models.UI
 
                 List<string> stringListToReturn = new List<string>
                 {
-                    $"[{startDate.ToString("yyyy'/'MM'/'dd")} - {endDate.ToString("yyyy'/'MM'/'dd")}]",
-                    $" --------------",
-                    $" Approved: {approvedStudents.Count}",
-                    $" Not Approved: {fStudents.Count}",
-                    $" --------------",
-                    $" All Grades",
-                    $" A: {aStudents.Count}",
-                    $" B: {bStudents.Count}",
-                    $" C: {cStudents.Count}",
-                    $" D: {dStudents.Count}",
-                    $" F: {fStudents.Count}",
-                    $" --------------"
+                    $" [{startDate.ToString("yyyy'/'MM'/'dd")} - {endDate.ToString("yyyy'/'MM'/'dd")}]",
+                    $"  --------------",
+                    $"  Approved: {approvedStudents.Count}",
+                    $"  Not Approved: {fStudents.Count}",
+                    $"  --------------",
+                    $"  All Grades",
+                    $"  A: {aStudents.Count}",
+                    $"  B: {bStudents.Count}",
+                    $"  C: {cStudents.Count}",
+                    $"  D: {dStudents.Count}",
+                    $"  F: {fStudents.Count}",
+                    $"  --------------"
                 };
 
                 return stringListToReturn;
