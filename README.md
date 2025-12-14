@@ -127,13 +127,22 @@ Filter by date range and see:
 - Course and teacher info
 
 ## EDIT MENU
-Register Student To Course
+### 1. Register Student To Course
 
 Allows you to:
 - Select student
 - Select course
 - Enter enrollment date
 - Validation prevents duplicate enrollments.
+
+### 2. Edit Student
+
+Allows you to select to edit:
+- Student Name.
+- Student email.
+- Start Date.
+- End Date.
+- Student Status.
 
 ## REMOVE MENU
 ### 1. Remove Student
