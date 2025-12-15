@@ -172,7 +172,7 @@ Allows you to select to edit:
 Delete a student permanently using email.
 
 ### 2. Clear & Reset Database Tables
-
+#### NOTE: Dangerous action – wipes all data in selected table!
 Reset any table to initial seed state:
 - Courses
 - Enrollments
@@ -183,4 +183,4 @@ Reset any table to initial seed state:
 - Teachers
 - Teacher Courses
 
-### NOTE: Dangerous action – wipes all data in selected table!
+
