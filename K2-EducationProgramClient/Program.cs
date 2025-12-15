@@ -35,12 +35,19 @@ namespace K2_EducationProgramClient
             using var db = provider.GetRequiredService<EducationProgramClientDbContext>();
 
             // Ensure DB is created
-            db.Database.EnsureCreated();
+            //db.Database.EnsureCreated();
 
-            //var MainMenu = new MainMenu();
-            //MainMenu.db = db;
+            ///* TEST DATA */
+            //var seedData = new SeedData();
+            //// ! RESETS AND RESEEDS ALL DATA !
+            //seedData.ClearDatabase(db);
+            //// Adds test data
+            //seedData.AddSeedData(db);
 
-            //MainMenu.Run();
+            var MainMenu = new MainMenu();
+            MainMenu.db = db;
+
+            MainMenu.Run();
         }
     }
 }
