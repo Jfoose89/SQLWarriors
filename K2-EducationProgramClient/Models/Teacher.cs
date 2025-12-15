@@ -14,6 +14,7 @@ namespace K2_EducationProgramClient.Models
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public required string Email { get; set; }
+        public ICollection<Schedule>? Schedules { get; set; }
         public ICollection<TeacherCourse>? TeacherCourses { get; set; }
         public ICollection<Room>? Rooms { get; set; }
     }

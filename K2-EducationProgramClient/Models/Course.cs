@@ -15,6 +15,7 @@ namespace K2_EducationProgramClient.Models
         public required string? CourseStatus { get; set; }
         public DateOnly ActiveFrom { get; set; }
         public DateOnly? ActiveTo { get; set; }
+        public ICollection<Schedule>? Schedules { get; set; }
         public ICollection<Enrollment>? Enrollments { get; set; }
         public ICollection<TeacherCourse>? TeacherCourses { get; set; }
     }

@@ -13,14 +13,15 @@ namespace K2_EducationProgramClient.Models
         [Key]
         public int GradeID { get; set; }
 
+        [ForeignKey(nameof(FkEnrollmentID))]
+
         public int FkEnrollmentID { get; set; }
+        public Enrollment? Enrollment { get; set; }
+
+        [ForeignKey(nameof(FkTeacherID))]
+
         public int FkTeacherID { get; set; }
-
-        [ForeignKey("FkEnrollmentID")]        
-        public Enrollment Enrollment { get; set; }
-
-        [ForeignKey("FkTeacherID")]        
-        public Teacher Teacher { get; set; }
+        public Teacher? Teacher { get; set; }
 
         public DateOnly GradeDate { get; set; }
         public string GradeValue { get; set; }

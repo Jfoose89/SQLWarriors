@@ -35,7 +35,17 @@ namespace K2_EducationProgramClient
             using var db = provider.GetRequiredService<EducationProgramClientDbContext>();
 
             // Ensure DB is created
-            db.Database.EnsureCreated();
+            //db.Database.EnsureCreated();
+
+            Console.WriteLine("Database created successfully.");
+
+            // Optional: Test querying some data
+            var students = db.Students.ToList();
+            Console.WriteLine($"Number of students: {students.Count}");
+            foreach (var s in students)
+            {
+                Console.WriteLine($"{s.FirstName} {s.LastName} - {s.Email}");
+            }
 
             //var MainMenu = new MainMenu();
             //MainMenu.db = db;

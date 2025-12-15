@@ -17,14 +17,16 @@ namespace K2_EducationProgramClient.Models
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-        public int FkTeacherCourseID { get; set; }
+        [ForeignKey(nameof(Course))]
+        public int FkCourseID { get; set; }
+        public Course Course { get; set; }
+
+        [ForeignKey(nameof(Room))]
         public int FkRoomID { get; set; }
+        public Room Room { get; set; }
 
-
-        [ForeignKey("FkTeacherCourseID")]       
-        public required TeacherCourse TeacherCourse { get; set; }
-
-        [ForeignKey("FkRoomID")]        
-        public required Room Room { get; set; }
+        [ForeignKey(nameof(Teacher))]
+        public int FkTeacherID { get; set; }
+        public Teacher Teacher { get; set; }
     }
 }
