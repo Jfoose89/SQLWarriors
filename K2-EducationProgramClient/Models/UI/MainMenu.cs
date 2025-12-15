@@ -645,6 +645,103 @@ namespace K2_EducationProgramClient.Models.UI
             }
             Console.WriteLine("What would you like to edit?");
             Console.WriteLine("1) Student Name\n2) Student Email\n3) Start Date\n4) End Date\n5) Student Status");
+            
+            string choice = Console.ReadLine();
+            if (!int.TryParse(choice, out int choiceNumber))
+            {
+               Console.WriteLine("Invalid option,Please enter a valid option.");
+               Console.Write("Enter a valid option: ");
+            }
+
+            switch (choiceNumber)
+            {
+               case 1:
+                   string studentFirstName = ConsolePrintHelper.AdminAskChoice("Enter First Name: ");
+                   string studentLastName = ConsolePrintHelper.AdminAskChoice("Enter Last Name: ");
+                   
+                   if (string.IsNullOrWhiteSpace(studentFirstName) || string.IsNullOrWhiteSpace(studentLastName))
+                   {
+                       ConsolePrintHelper.PrintError("Name cannot be blank");
+                       ConsolePrintHelper.Pause();
+                       return;
+                   }
+                   
+                   student.FirstName = studentFirstName;
+                   student.LastName = studentLastName;
+                   db.Students.Update(student);
+                   break;
+               case 2:
+                   string  studentEmail = ConsolePrintHelper.AdminAskChoice("Enter Email: ");
+                   if (string.IsNullOrWhiteSpace(studentEmail))
+                   {
+                       ConsolePrintHelper.PrintError("Email cannot be blank");
+                       ConsolePrintHelper.Pause();
+                       return;
+                   }
+
+                   var updatedEmail = db.Students.Where(s => s.StudentID == student.StudentID).First(s => s.Email == studentEmail);
+                   db.Students.Update(updatedEmail);
+                   db.SaveChanges();
+                   break;
+               case 3:
+                   string studentStartDate = ConsolePrintHelper.AdminAskChoice("Enter Start Date (2025-12-12): ");
+                   if (!DateOnly.TryParse(studentStartDate, out DateOnly startDate))
+                   {
+                       ConsolePrintHelper.PrintError("Invalid date format");
+                       ConsolePrintHelper.Pause();
+                       return;
+                   }
+                   student.StartDate = startDate;
+                   db.Students.Update(student);
+                   break;
+               case 4:
+                   string  studentEndDate = ConsolePrintHelper.AdminAskChoice("Enter End Date (2025-12-12): ");
+                   if (!DateOnly.TryParse(studentEndDate, out DateOnly endDate))
+                   {
+                       ConsolePrintHelper.PrintError("Invalid date format");
+                       ConsolePrintHelper.Pause();
+                       return;
+                   }
+                   student.EndDate = endDate;
+                   db.SaveChanges();
+                   break;
+               case 5:
+                   string studentStatus = ConsolePrintHelper.AdminAskChoice("Enter Status: ");
+                   if (string.IsNullOrWhiteSpace(studentStatus))
+                   {
+                       ConsolePrintHelper.PrintError("Status cannot be blank");
+                       ConsolePrintHelper.Pause();
+                       return;
+                   }
+                   student.StudentStatus = studentStatus;
+                   db.SaveChanges();
+                   break;
+               default:
+                   Console.WriteLine("Invalid option,Please enter a valid option.");
+                   ConsolePrintHelper.Pause();
+                   return;
+            }
+
+            db.SaveChanges();
+            Console.WriteLine("Student Updated successfully!");
+            ConsolePrintHelper.Pause();
+        }
+
+        public void ShowActiveCoursesWithStudents()
+        {
+            Console.Clear();
+            ConsolePrintHelper.AdminTitle("ADMIN MENU");
+            ConsolePrintHelper.AdminSubTitle("Edit student");
+            string? studentID = ConsolePrintHelper.AdminAskChoice("Enter ID of the student: ");
+            var student = db.Students.FirstOrDefault(s => s.StudentID == int.Parse(studentID));
+            if (student is null)
+            {
+                ConsolePrintHelper.PrintError("Student not found.");
+                ConsolePrintHelper.Pause();
+                return;
+            }
+            Console.WriteLine("What would you like to edit?");
+            Console.WriteLine("1) Student Name\n2) Student Email\n3) Start Date\n4) End Date\n5) Student Status");
 
             string choice = Console.ReadLine();
             if (!int.TryParse(choice, out int choiceNumber))

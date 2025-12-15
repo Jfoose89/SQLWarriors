@@ -405,24 +405,26 @@ namespace K2_EducationProgramClient.Models.UI
                     })
                     .ToList();
 
-                int maxStudent = gradesList.Max(x => x.StudentName.Length);
-                int maxCourse = gradesList.Max(x => x.CourseName.Length);
-                int maxGrade = gradesList.Max(x => x.Grade.Length);
-                int maxTeacher = gradesList.Max(x => x.TeacherName.Length);
+                if (gradesList.Count() > 0)
+                {
+                    int maxStudent = gradesList.Max(x => x.StudentName.Length);
+                    int maxCourse = gradesList.Max(x => x.CourseName.Length);
+                    int maxGrade = gradesList.Max(x => x.Grade.Length);
+                    int maxTeacher = gradesList.Max(x => x.TeacherName.Length);
 
-                var listToReturn = gradesList
-                    .Select(x =>
-                        $" [ STUDENT: {x.StudentName.PadRight(maxStudent)} ]\n" +
-                        $"   COURSE : {x.CourseName.PadRight(maxCourse)}\n" +
-                        $"   GRADE  : {x.Grade.PadRight(maxGrade)}\n" +
-                        $"   DATE   : {x.GradeDate:yyyy/MM/dd}\n" +
-                        $"   TEACHER: {x.TeacherName.PadRight(maxTeacher)}\n"
-                    )
-                    .ToList();
+                    var listToReturn = gradesList
+                        .Select(x =>
+                            $" [ STUDENT: {x.StudentName.PadRight(maxStudent)} ]\n" +
+                            $"   COURSE : {x.CourseName.PadRight(maxCourse)}\n" +
+                            $"   GRADE  : {x.Grade.PadRight(maxGrade)}\n" +
+                            $"   DATE   : {x.GradeDate:yyyy/MM/dd}\n" +
+                            $"   TEACHER: {x.TeacherName.PadRight(maxTeacher)}\n"
+                        )
+                        .ToList();
 
-                return listToReturn;
+                    return listToReturn;
+                }
             }
-
             return null;
         }
         internal static List<string>? GetStudentApprovalReportByTermList(EducationProgramClientDbContext? db, DateOnly startDate, DateOnly endDate)
