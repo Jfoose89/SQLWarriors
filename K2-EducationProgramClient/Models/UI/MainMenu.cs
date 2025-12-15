@@ -27,7 +27,7 @@ namespace K2_EducationProgramClient.Models.UI
                     "VIEW",
                     "EDIT",
                     "REMOVE"
-                    
+
                 });
                 var choice = ConsolePrintHelper.AdminAskChoice("Choose:");
 
@@ -68,9 +68,9 @@ namespace K2_EducationProgramClient.Models.UI
                     case "1": CreateCourse(); break;
                     case "2": CreateEnrollment(); break;
                     case "3": CreateGrade(); break;
-                    case "4": CreateRoom();  break;
-                    case "5": CreateSchedule();  break;
-                    case "6": CreateStudent();  break;
+                    case "4": CreateRoom(); break;
+                    case "5": CreateSchedule(); break;
+                    case "6": CreateStudent(); break;
                     case "7": CreateTeacher(); break;
                     case "8": CreateTeacherCourse(); break;
                     case "0": running = false; break;
@@ -99,7 +99,7 @@ namespace K2_EducationProgramClient.Models.UI
 
                 switch (choice)
                 {
-                    case "1": ShowAllSelect();  break;
+                    case "1": ShowAllSelect(); break;
                     case "2": FindStudent(); break;
                     case "3": ShowStudentCourseGradeTeacher(); break;
                     case "4": ShowActiveCoursesWithStudents(); break;
@@ -133,34 +133,34 @@ namespace K2_EducationProgramClient.Models.UI
 
                 switch (choice)
                 {
-                    case "1": 
-                        ConsolePrintHelper.AdminList("COURSES", MainMenuServices.GetCoursesAsList(db)); 
-                        ConsolePrintHelper.Pause(); 
+                    case "1":
+                        ConsolePrintHelper.AdminList("COURSES", MainMenuServices.GetCoursesAsList(db));
+                        ConsolePrintHelper.Pause();
                         break;
 
-                    case "2": 
-                        ConsolePrintHelper.AdminList("ENROLLMENTS", MainMenuServices.GetEnrollmentsAsList(db)); 
-                        ConsolePrintHelper.Pause(); 
+                    case "2":
+                        ConsolePrintHelper.AdminList("ENROLLMENTS", MainMenuServices.GetEnrollmentsAsList(db));
+                        ConsolePrintHelper.Pause();
                         break;
 
-                    case "3": 
-                        ConsolePrintHelper.AdminList("GRADES", MainMenuServices.GetGradesAsList(db)); 
-                        ConsolePrintHelper.Pause(); 
+                    case "3":
+                        ConsolePrintHelper.AdminList("GRADES", MainMenuServices.GetGradesAsList(db));
+                        ConsolePrintHelper.Pause();
                         break;
 
-                    case "4": 
-                        ConsolePrintHelper.AdminList("ROOMS", MainMenuServices.GetRoomsAsList(db)); 
-                        ConsolePrintHelper.Pause(); 
+                    case "4":
+                        ConsolePrintHelper.AdminList("ROOMS", MainMenuServices.GetRoomsAsList(db));
+                        ConsolePrintHelper.Pause();
                         break;
 
-                    case "5": 
-                        ConsolePrintHelper.AdminList("SCHEDULES", MainMenuServices.GetSchedulesAsList(db)); 
-                        ConsolePrintHelper.Pause(); 
+                    case "5":
+                        ConsolePrintHelper.AdminList("SCHEDULES", MainMenuServices.GetSchedulesAsList(db));
+                        ConsolePrintHelper.Pause();
                         break;
 
-                    case "6": 
-                        ConsolePrintHelper.AdminList("STUDENTS", MainMenuServices.GetStudentsAsList(db)); 
-                        ConsolePrintHelper.Pause(); 
+                    case "6":
+                        ConsolePrintHelper.AdminList("STUDENTS", MainMenuServices.GetStudentsAsList(db));
+                        ConsolePrintHelper.Pause();
                         break;
 
                     case "7":
@@ -168,17 +168,17 @@ namespace K2_EducationProgramClient.Models.UI
                         ConsolePrintHelper.Pause();
                         break;
 
-                    case "8": 
-                        ConsolePrintHelper.AdminList("TEACHER COURSES", MainMenuServices.GetTeacherCoursesAsList(db)); 
-                        ConsolePrintHelper.Pause(); 
+                    case "8":
+                        ConsolePrintHelper.AdminList("TEACHER COURSES", MainMenuServices.GetTeacherCoursesAsList(db));
+                        ConsolePrintHelper.Pause();
                         break;
 
-                    case "0": 
-                        running = false; 
+                    case "0":
+                        running = false;
                         break;
 
-                    default: 
-                        ConsolePrintHelper.FaultyMenuChoice(); 
+                    default:
+                        ConsolePrintHelper.FaultyMenuChoice();
                         break;
                 }
             }
@@ -280,7 +280,7 @@ namespace K2_EducationProgramClient.Models.UI
             if (ConsolePrintHelper.NullInputWarning(inCourseName)) return;
             string? inCourseStatus = ConsolePrintHelper.AdminAskChoice("Enter Course Status: ");
             if (ConsolePrintHelper.NullInputWarning(inCourseStatus)) return;
-            
+
 
             DateOnly inCourseStartDate;
             while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("Enter Course Start Date (YYYY-MM-DD): "), out inCourseStartDate))
@@ -289,7 +289,7 @@ namespace K2_EducationProgramClient.Models.UI
                 ConsolePrintHelper.Pause();
                 return;
             }
-            
+
             DateOnly inCourseEndDate;
             while (!DateOnly.TryParse(ConsolePrintHelper.AdminAskChoice("(Optional)\nEnter Course End Date (YYYY-MM-DD): "), out inCourseEndDate))
             {
@@ -372,7 +372,7 @@ namespace K2_EducationProgramClient.Models.UI
             ConsolePrintHelper.AdminList("TEACHERS", MainMenuServices.GetTeachersAsList(db));
             string? inRoomTeacherID = ConsolePrintHelper.AdminAskChoice("Assign Teacher To Room using [ID]: ");
             if (ConsolePrintHelper.NullInputWarning(inRoomTeacherID)) return;
-            if(!int.TryParse(inRoomTeacherID, out int validTeacherID))
+            if (!int.TryParse(inRoomTeacherID, out int validTeacherID))
                 Console.WriteLine(" Invalid input. Please enter a valid integer.");
 
             MainMenuServices.CreateRoom(db, inRoomName, inRoomCapacity, validTeacherID);
@@ -414,7 +414,7 @@ namespace K2_EducationProgramClient.Models.UI
             }
 
             MainMenuServices.CreateEnrollment(db, int.Parse(inCourseID), int.Parse(inStudentID), inEnrollmentDate);
-            
+
             ConsolePrintHelper.Pause();
         }
 
@@ -455,7 +455,14 @@ namespace K2_EducationProgramClient.Models.UI
                 Console.Write("Enter a date (yyyy-MM-dd): ");
             }
 
-            MainMenuServices.CreateGrade(db, int.Parse(inEnrollmentID), int.Parse(inTeacherID), inGradeDate, inGradeValue);
+            try
+            {
+                MainMenuServices.CreateGrade(db, int.Parse(inEnrollmentID), int.Parse(inTeacherID), inGradeDate, inGradeValue);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" Unexpected error: {ex.Message}");
+            }
 
             ConsolePrintHelper.Pause();
         }
